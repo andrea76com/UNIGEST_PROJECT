@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}UNIGEST{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    
+    <!-- Custom CSS -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'core:home' %}">
+                <i class="bi bi-mortarboard-fill"></i> UNIGEST
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <!-- ANAGRAFICHE -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-people-fill"></i> Anagrafiche
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'core:iscritto_list' %}">
+                                <i class="bi bi-person"></i> Iscritti
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'core:docente_list' %}">
+                                <i class="bi bi-person-badge"></i> Docenti
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'core:autorita_list' %}">
+                                <i class="bi bi-award"></i> Autorità
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'core:iscritto_create' %}">
+                                <i class="bi bi-plus-circle"></i> Nuovo Iscritto
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- CORSI -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-book-fill"></i> Corsi
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'core:corso_list' %}">
+                                <i class="bi bi-book"></i> Elenco Corsi
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'core:edizione_list' %}">
+                                <i class="bi bi-calendar-event"></i> Edizioni Corsi
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'core:corso_create' %}">
+                                <i class="bi bi-plus-circle"></i> Nuovo Corso
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'core:edizione_create' %}">
+                                <i class="bi bi-plus-circle"></i> Nuova Edizione
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- ISCRIZIONI -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-card-checklist"></i> Iscrizioni
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'core:iscrizione_anno_list' %}">
+                                <i class="bi bi-calendar-check"></i> Iscrizioni Anno
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'core:iscrizione_corso_list' %}">
+                                <i class="bi bi-list-check"></i> Iscrizioni Corsi
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'core:iscrizione_anno_create' %}">
+                                <i class="bi bi-plus-circle"></i> Nuova Iscrizione Anno
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'core:iscrizione_corso_create' %}">
+                                <i class="bi bi-plus-circle"></i> Nuova Iscrizione Corso
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- LEZIONI -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-journal-text"></i> Lezioni
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'core:lezione_list' %}">
+                                <i class="bi bi-list"></i> Elenco Lezioni
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'core:lezione_create' %}">
+                                <i class="bi bi-plus-circle"></i> Nuova Lezione
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- REPORT -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-printer-fill"></i> Report
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'core:report_menu' %}">
+                                <i class="bi bi-file-earmark-text"></i> Menu Report
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">
+                                <i class="bi bi-file-pdf"></i> Foglio Presenze
+                            </a></li>
+                            <li><a class="dropdown-item" href="#">
+                                <i class="bi bi-file-pdf"></i> Elenco Iscritti
+                            </a></li>
+                            <li><a class="dropdown-item" href="#">
+                                <i class="bi bi-bar-chart"></i> Statistiche
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <!-- Selettore Anno Accademico -->
+                <div class="navbar-text me-3">
+                    <form method="post" action="{% url 'core:cambia_anno_accademico' %}" class="d-flex align-items-center" style="margin: 0;">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+
+                        <i class="bi bi-calendar3 me-2"></i>
+
+                        <select name="anno_id" class="form-select form-select-sm" style="width: auto; min-width: 150px;" onchange="this.form.submit()">
+                            {% if anno_attivo %}
+                                <option value="">-- Seleziona Anno --</option>
+                                {% for anno in anni_disponibili %}
+                                    <option value="{{ anno.id }}" {% if anno.id == anno_attivo.id %}selected{% endif %}>
+                                        {{ anno.anno }}
+                                        {% if anno.attivo %}★{% endif %}
+                                    </option>
+                                {% endfor %}
+                            {% else %}
+                                <option value="">Nessun anno disponibile</option>
+                            {% endif %}
+                        </select>
+                    </form>
+                </div>
+                
+                <!-- Admin Link -->
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin:index' %}" target="_blank">
+                            <i class="bi bi-gear-fill"></i> Admin
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Messaggi Flash -->
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <!-- Contenuto Principale -->
+    <main class="container-fluid mt-4 mb-5">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-light text-center py-3 mt-auto">
+        <div class="container">
+            <p class="mb-0 text-muted">
+                <i class="bi bi-mortarboard-fill"></i> UNIGEST &copy; 2024 - Gestionale Università degli Adulti
+            </p>
+        </div>
+    </footer>
+    
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="{% static 'js/script.js' %}"></script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

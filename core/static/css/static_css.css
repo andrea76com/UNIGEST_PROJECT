@@ -1,0 +1,505 @@
+/* 
+UNIGEST - Custom CSS
+File: core/static/css/style.css
+Descrizione: Stili personalizzati per l'applicazione
+*/
+
+/* ============================================================================
+   GLOBAL STYLES
+   ============================================================================ */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+/* ============================================================================
+   NAVBAR CUSTOMIZATION
+   ============================================================================ */
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.navbar-text {
+    border-left: 2px solid rgba(255, 255, 255, 0.3);
+    padding-left: 1rem;
+}
+
+/* ============================================================================
+   CARDS
+   ============================================================================ */
+
+.card {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    font-weight: 600;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.125);
+}
+
+/* ============================================================================
+   TABLES
+   ============================================================================ */
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+    cursor: pointer;
+}
+
+.table thead th {
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+/* Zebra striping per tabelle */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* ============================================================================
+   BUTTONS
+   ============================================================================ */
+
+.btn {
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* ============================================================================
+   BADGES
+   ============================================================================ */
+
+.badge {
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+}
+
+/* ============================================================================
+   FORMS
+   ============================================================================ */
+
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid {
+    border-color: #dc3545;
+}
+
+.text-danger.small {
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Checkbox e Radio personalizzati */
+.form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+/* ============================================================================
+   ALERTS
+   ============================================================================ */
+
+.alert {
+    border-radius: 6px;
+    border-left: 4px solid;
+}
+
+.alert-success {
+    border-left-color: #198754;
+}
+
+.alert-danger {
+    border-left-color: #dc3545;
+}
+
+.alert-warning {
+    border-left-color: #ffc107;
+}
+
+.alert-info {
+    border-left-color: #0dcaf0;
+}
+
+/* ============================================================================
+   PAGINATION
+   ============================================================================ */
+
+.pagination {
+    margin-top: 1.5rem;
+}
+
+.page-link {
+    color: #0d6efd;
+    border-radius: 4px;
+    margin: 0 2px;
+}
+
+.page-link:hover {
+    background-color: #e9ecef;
+}
+
+.page-item.active .page-link {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+/* ============================================================================
+   TABS
+   ============================================================================ */
+
+.nav-tabs .nav-link {
+    border: 1px solid transparent;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.nav-tabs .nav-link:hover {
+    border-color: #e9ecef #e9ecef #dee2e6;
+    color: #0d6efd;
+}
+
+.nav-tabs .nav-link.active {
+    color: #495057;
+    background-color: #fff;
+    border-color: #dee2e6 #dee2e6 #fff;
+    font-weight: 600;
+}
+
+/* ============================================================================
+   BREADCRUMBS
+   ============================================================================ */
+
+.breadcrumb {
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+}
+
+.breadcrumb-item.active {
+    color: #6c757d;
+}
+
+/* ============================================================================
+   FOOTER
+   ============================================================================ */
+
+footer {
+    border-top: 1px solid #dee2e6;
+    margin-top: auto;
+}
+
+/* ============================================================================
+   UTILITIES
+   ============================================================================ */
+
+/* Spacing helpers */
+.mt-6 {
+    margin-top: 4rem !important;
+}
+
+.mb-6 {
+    margin-bottom: 4rem !important;
+}
+
+/* Text utilities */
+.text-small {
+    font-size: 0.875rem;
+}
+
+.text-xsmall {
+    font-size: 0.75rem;
+}
+
+/* Shadow utilities */
+.shadow-sm {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}
+
+.shadow {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+/* ============================================================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+    
+    .display-4 {
+        font-size: 2rem;
+    }
+    
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    .btn-lg {
+        font-size: 1rem;
+    }
+}
+
+/* ============================================================================
+   PRINT STYLES
+   ============================================================================ */
+
+@media print {
+    .navbar,
+    .btn,
+    footer,
+    .no-print {
+        display: none !important;
+    }
+    
+    .card {
+        border: 1px solid #dee2e6;
+        box-shadow: none;
+    }
+    
+    .table {
+        font-size: 0.875rem;
+    }
+}
+
+/* ============================================================================
+   LOADING SPINNER
+   ============================================================================ */
+
+.spinner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.spinner-border-lg {
+    width: 3rem;
+    height: 3rem;
+    border-width: 0.3rem;
+}
+
+/* ============================================================================
+   CUSTOM SCROLLBAR
+   ============================================================================ */
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* ============================================================================
+   ANIMATIONS
+   ============================================================================ */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ============================================================================
+   DASHBOARD SPECIFIC STYLES
+   ============================================================================ */
+
+.stat-card {
+    border-left: 4px solid;
+    transition: all 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card.border-primary {
+    border-left-color: #0d6efd;
+}
+
+.stat-card.border-success {
+    border-left-color: #198754;
+}
+
+.stat-card.border-warning {
+    border-left-color: #ffc107;
+}
+
+.stat-card.border-info {
+    border-left-color: #0dcaf0;
+}
+
+/* ============================================================================
+   CORSO/EDIZIONE SPECIFIC
+   ============================================================================ */
+
+.corso-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.corso-culturale {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.corso-laboratorio {
+    background-color: #fff3e0;
+    color: #f57c00;
+}
+
+.corso-lingua {
+    background-color: #f3e5f5;
+    color: #7b1fa2;
+}
+
+.corso-altro {
+    background-color: #e8f5e9;
+    color: #388e3c;
+}
+
+/* ============================================================================
+   PRESENZA INDICATORS
+   ============================================================================ */
+
+.presenza-presente {
+    color: #198754;
+    font-weight: bold;
+}
+
+.presenza-assente {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+/* ============================================================================
+   EMPTY STATES
+   ============================================================================ */
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #6c757d;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    opacity: 0.3;
+    margin-bottom: 1rem;
+}
+
+.empty-state p {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* ============================================================================
+ *  SELETTORE ANNO ACCADEMICO
+ *  ============================================================================ */
+
+/* Stile per il form nella navbar */
+.navbar-text form {
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-text .form-select {
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #333;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.navbar-text .form-select:hover {
+    background-color: white;
+    border-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-text .form-select:focus {
+    background-color: white;
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Stella per anno attivo */
+.navbar-text .form-select option:checked {
+    font-weight: bold;
+}
+

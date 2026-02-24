@@ -1,0 +1,333 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ iscritto.nominativo }} - UNIGEST{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>
+                <i class="bi bi-person-fill text-primary"></i> 
+                {{ iscritto.nominativo }}
+                {% if iscritto.e_assistente %}
+                <span class="badge bg-info">Assistente</span>
+                {% endif %}
+                {% if iscritto.e_collaboratore %}
+                <span class="badge bg-success">Collaboratore</span>
+                {% endif %}
+            </h2>
+            <p class="text-muted">Matricola: {{ iscritto.matricola }}</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'core:iscritto_update' iscritto.pk %}" class="btn btn-warning">
+                <i class="bi bi-pencil"></i> Modifica
+            </a>
+            <a href="{% url 'core:iscritto_list' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Torna all'elenco
+            </a>
+        </div>
+    </div>
+    
+    <!-- Tabs -->
+    <ul class="nav nav-tabs mb-3" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#anagrafica">
+                <i class="bi bi-person-badge"></i> Dati Anagrafici
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#iscrizioni">
+                <i class="bi bi-calendar-check"></i> Iscrizioni
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#corsi">
+                <i class="bi bi-book"></i> Corsi Frequentati
+            </a>
+        </li>
+        {% if corsi_come_assistente %}
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#assistenza">
+                <i class="bi bi-award"></i> Corsi come Assistente
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+    
+    <!-- Tab Content -->
+    <div class="tab-content">
+        <!-- TAB: Dati Anagrafici -->
+        <div class="tab-pane fade show active" id="anagrafica">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header bg-primary text-white">
+                            <i class="bi bi-person"></i> Dati Personali
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-sm">
+                                <tr>
+                                    <th width="40%">Sesso:</th>
+                                    <td>{{ iscritto.get_sesso_display }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Codice Fiscale:</th>
+                                    <td>{{ iscritto.codice_fiscale|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Luogo di Nascita:</th>
+                                    <td>{{ iscritto.luogo_nascita|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Data di Nascita:</th>
+                                    <td>{{ iscritto.data_nascita|date:"d/m/Y"|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Età:</th>
+                                    <td>
+                                        {% if iscritto.eta %}
+                                            {{ iscritto.eta }} anni ({{ iscritto.fascia_eta }})
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Stato Civile:</th>
+                                    <td>{{ iscritto.situazione|default:"-" }}</td>
+                                </tr>
+                                {% if iscritto.coniuge %}
+                                <tr>
+                                    <th>Coniuge:</th>
+                                    <td>
+                                        <a href="{% url 'core:iscritto_detail' iscritto.coniuge.pk %}">
+                                            {{ iscritto.coniuge.nominativo }}
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header bg-success text-white">
+                            <i class="bi bi-geo-alt"></i> Residenza e Contatti
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-sm">
+                                <tr>
+                                    <th width="40%">Indirizzo:</th>
+                                    <td>{{ iscritto.indirizzo|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Comune:</th>
+                                    <td>{{ iscritto.comune|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Telefono:</th>
+                                    <td>{{ iscritto.telefono|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Cellulare:</th>
+                                    <td>
+                                        {{ iscritto.cellulare|default:"-" }}
+                                        {% if iscritto.ha_whatsapp %}
+                                        <span class="badge bg-success">WhatsApp</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Email:</th>
+                                    <td>
+                                        {% if iscritto.email %}
+                                        <a href="mailto:{{ iscritto.email }}">{{ iscritto.email }}</a>
+                                        {% else %}
+                                        -
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Riceve Posta:</th>
+                                    <td>
+                                        {% if iscritto.riceve_posta %}
+                                        <i class="bi bi-check-circle-fill text-success"></i> Sì
+                                        {% else %}
+                                        <i class="bi bi-x-circle-fill text-danger"></i> No
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header bg-info text-white">
+                            <i class="bi bi-mortarboard"></i> Istruzione e Professione
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-sm">
+                                <tr>
+                                    <th width="40%">Titolo di Studio:</th>
+                                    <td>{{ iscritto.titolo_studio|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Professione Attuale:</th>
+                                    <td>{{ iscritto.professione_attuale|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Professione Passata:</th>
+                                    <td>{{ iscritto.professione_passata|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Pensionato:</th>
+                                    <td>
+                                        {% if iscritto.e_pensionato %}
+                                        <i class="bi bi-check-circle-fill text-success"></i> Sì
+                                        {% else %}
+                                        <i class="bi bi-x-circle-fill text-secondary"></i> No
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    {% if iscritto.note %}
+                    <div class="card mb-3">
+                        <div class="card-header bg-warning">
+                            <i class="bi bi-sticky"></i> Note
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-0">{{ iscritto.note }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- TAB: Iscrizioni Anni -->
+        <div class="tab-pane fade" id="iscrizioni">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-calendar-check"></i> Storico Iscrizioni Anno Accademico
+                </div>
+                <div class="card-body">
+                    {% if iscrizioni_anni %}
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Anno Accademico</th>
+                                <th>Data Iscrizione</th>
+                                <th>N° Ricevuta</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for iscrizione in iscrizioni_anni %}
+                            <tr>
+                                <td><strong>{{ iscrizione.anno_accademico.anno }}</strong></td>
+                                <td>{{ iscrizione.data_iscrizione|date:"d/m/Y" }}</td>
+                                <td>{{ iscrizione.numero_ricevuta }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p class="text-muted text-center">Nessuna iscrizione registrata</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- TAB: Corsi Frequentati -->
+        <div class="tab-pane fade" id="corsi">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-book"></i> Corsi Frequentati
+                </div>
+                <div class="card-body">
+                    {% if corsi_frequentati %}
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Anno</th>
+                                <th>Corso</th>
+                                <th>Quadrimestre</th>
+                                <th>Data Iscrizione</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for iscrizione in corsi_frequentati %}
+                            <tr>
+                                <td>{{ iscrizione.anno_accademico.anno }}</td>
+                                <td>
+                                    <a href="{% url 'core:edizione_detail' iscrizione.edizione_corso.pk %}">
+                                        {{ iscrizione.edizione_corso.corso.nome }}
+                                    </a>
+                                </td>
+                                <td>{{ iscrizione.edizione_corso.quadrimestre }}</td>
+                                <td>{{ iscrizione.data_iscrizione|date:"d/m/Y" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p class="text-muted text-center">Nessun corso frequentato</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- TAB: Corsi come Assistente -->
+        {% if corsi_come_assistente %}
+        <div class="tab-pane fade" id="assistenza">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <i class="bi bi-award"></i> Corsi come Assistente
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Anno</th>
+                                <th>Corso</th>
+                                <th>Ruolo</th>
+                                <th>Docente</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for edizione in corsi_come_assistente %}
+                            <tr>
+                                <td>{{ edizione.anno_accademico.anno }}</td>
+                                <td>
+                                    <a href="{% url 'core:edizione_detail' edizione.pk %}">
+                                        {{ edizione.corso.nome }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {% if edizione.assistente == iscritto %}
+                                    <span class="badge bg-info">Assistente</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">Vice Assistente</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ edizione.docente.nome }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

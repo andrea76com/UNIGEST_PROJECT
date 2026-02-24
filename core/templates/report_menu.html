@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+
+{% block title %}Menu Report - UNIGEST{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="bi bi-printer-fill text-primary"></i> Menu Report e Stampe</h2>
+            <p class="lead text-muted">Seleziona il tipo di report da generare</p>
+            <hr>
+        </div>
+    </div>
+    
+    <!-- Report per Corso -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h4><i class="bi bi-book"></i> Report per Corso</h4>
+        </div>
+    </div>
+    
+    <div class="row g-3 mb-5">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-file-earmark-check text-primary"></i> Foglio Presenze
+                    </h5>
+                    <p class="card-text">
+                        Genera il foglio presenze per un corso specifico con elenco corsisti.
+                    </p>
+                    <hr>
+                    <p class="text-muted small">
+                        <strong>Contenuto:</strong> Elenco iscritti, date lezioni, presenze
+                    </p>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalFoglioPresenze">
+                        <i class="bi bi-printer"></i> Genera Report
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-people text-success"></i> Elenco Iscritti Corso
+                    </h5>
+                    <p class="card-text">
+                        Elenco completo degli iscritti a un corso con dati anagrafici.
+                    </p>
+                    <hr>
+                    <p class="text-muted small">
+                        <strong>Contenuto:</strong> Nome, cognome, contatti, note
+                    </p>
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalElencoIscritti">
+                        <i class="bi bi-printer"></i> Genera Report
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-card-list text-info"></i> Registro Lezioni
+                    </h5>
+                    <p class="card-text">
+                        Storico completo delle lezioni svolte per un corso.
+                    </p>
+                    <hr>
+                    <p class="text-muted small">
+                        <strong>Contenuto:</strong> Date, argomenti, presenze, ore
+                    </p>
+                    <button class="btn btn-info">
+                        <i class="bi bi-printer"></i> Genera Report
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Report per Anno Accademico -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h4><i class="bi bi-calendar-event"></i> Report per Anno Accademico</h4>
+        </div>
+    </div>
+    
+    <div class="row g-3 mb-5">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-bar-chart text-warning"></i> Statistiche Anno
+                    </h5>
+                    <p class="card-text">
+                        Statistiche dettagliate: iscritti, corsi, frequenze per anno accademico.
+                    </p>
+                    <hr>
+                    <p class="text-muted small">
+                        <strong>Contenuto:</strong> Grafici, tabelle, confronti
+                    </p>
+                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalStatistiche">
+                        <i class="bi bi-graph-up"></i> Visualizza
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-list-ol text-danger"></i> Elenco Corsi Anno
+                    </h5>
+                    <p class="card-text">
+                        Elenco completo di tutti i corsi attivati in un anno accademico.
+                    </p>
+                    <hr>
+                    <p class="text-muted small">
+                        <strong>Contenuto:</strong> Corsi, docenti, orari, iscritti
+                    </p>
+                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalCorsiAnno">
+                        <i class="bi bi-printer"></i> Genera Report
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-person-lines-fill text-secondary"></i> Elenco Iscritti Anno
+                    </h5>
+                    <p class="card-text">
+                        Lista completa degli iscritti all'anno accademico.
+                    </p>
+                    <hr>
+                    <p class="text-muted small">
+                        <strong>Contenuto:</strong> Anagrafe completa, corsi frequentati
+                    </p>
+                    <button class="btn btn-secondary">
+                        <i class="bi bi-printer"></i> Genera Report
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Report Anagrafici -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h4><i class="bi bi-people-fill"></i> Report Anagrafici</h4>
+        </div>
+    </div>
+    
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-person-vcard text-primary"></i> Anagrafica Completa
+                    </h5>
+                    <p class="card-text">
+                        Esporta l'intera anagrafica iscritti in Excel.
+                    </p>
+                    <a href="#" class="btn btn-primary">
+                        <i class="bi bi-file-earmark-excel"></i> Esporta Excel
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-envelope text-success"></i> Etichette Indirizzi
+                    </h5>
+                    <p class="card-text">
+                        Genera etichette per invio corrispondenza.
+                    </p>
+                    <button class="btn btn-success">
+                        <i class="bi bi-printer"></i> Genera Etichette
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-telephone text-info"></i> Rubrica Contatti
+                    </h5>
+                    <p class="card-text">
+                        Esporta rubrica con email e telefoni.
+                    </p>
+                    <button class="btn btn-info">
+                        <i class="bi bi-file-earmark-excel"></i> Esporta Excel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Foglio Presenze -->
+<div class="modal fade" id="modalFoglioPresenze" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Genera Foglio Presenze</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label">Seleziona Edizione Corso:</label>
+                        <select class="form-select" required>
+                            <option value="">-- Seleziona --</option>
+                            <!-- Popola con edizioni disponibili -->
+                        </select>
+                    </div>
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> 
+                        Verrà generato un PDF con tutte le lezioni e le presenze.
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                <button type="button" class="btn btn-primary">
+                    <i class="bi bi-file-pdf"></i> Genera PDF
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Altri modali simili... -->
+
+{% endblock %}

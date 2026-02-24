@@ -1,0 +1,895 @@
+INFO 2025-11-24 15:16:03,617 autoreload Watching for file changes with StatReloader
+INFO 2025-11-24 15:16:18,012 basehttp "GET / HTTP/1.1" 302 0
+ERROR 2025-11-24 15:16:18,209 log Internal Server Error: /unigest/
+Traceback (most recent call last):
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/core/views.py", line 53, in home
+    return render(request, 'home.html', context)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/test/utils.py", line 112, in instrumented_test_render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/test/utils.py", line 112, in instrumented_test_render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 63, in render
+    result = block.nodelist.render(context)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 321, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 471, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/urls/base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/urls/resolvers.py", line 828, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'core_annoacca demico_changelist' not found. 'core_annoacca demico_changelist' is not a valid view function or pattern name.
+ERROR 2025-11-24 15:16:18,239 basehttp "GET /unigest/ HTTP/1.1" 500 188764
+INFO 2025-11-24 15:16:18,378 basehttp "GET /static/debug_toolbar/js/toolbar.js HTTP/1.1" 200 13404
+INFO 2025-11-24 15:16:18,385 basehttp "GET /static/debug_toolbar/css/toolbar.css HTTP/1.1" 200 12621
+INFO 2025-11-24 15:16:18,439 basehttp "GET /static/debug_toolbar/js/utils.js HTTP/1.1" 200 4527
+INFO 2025-11-24 15:16:18,624 basehttp "GET /static/debug_toolbar/css/print.css HTTP/1.1" 200 43
+WARNING 2025-11-24 15:16:18,644 log Not Found: /favicon.ico
+INFO 2025-11-25 17:21:28,746 basehttp "GET / HTTP/1.1" 302 0
+ERROR 2025-11-25 17:21:29,575 log Internal Server Error: /unigest/
+Traceback (most recent call last):
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/core/views.py", line 53, in home
+    return render(request, 'home.html', context)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/test/utils.py", line 112, in instrumented_test_render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/test/utils.py", line 112, in instrumented_test_render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 63, in render
+    result = block.nodelist.render(context)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 321, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 471, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/urls/base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/urls/resolvers.py", line 828, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'core_annoacca demico_changelist' not found. 'core_annoacca demico_changelist' is not a valid view function or pattern name.
+ERROR 2025-11-25 17:21:29,618 basehttp "GET /unigest/ HTTP/1.1" 500 189214
+INFO 2025-11-25 17:21:29,766 basehttp "GET /static/debug_toolbar/css/toolbar.css HTTP/1.1" 200 12621
+INFO 2025-11-25 17:21:29,774 basehttp "GET /static/debug_toolbar/js/toolbar.js HTTP/1.1" 200 13404
+INFO 2025-11-25 17:21:30,004 basehttp "GET /static/debug_toolbar/js/utils.js HTTP/1.1" 304 0
+INFO 2025-11-25 17:21:30,004 basehttp "GET /static/debug_toolbar/css/print.css HTTP/1.1" 304 0
+INFO 2025-11-25 17:38:30,514 autoreload Watching for file changes with StatReloader
+INFO 2025-11-25 17:38:54,937 basehttp "GET /unigest/ HTTP/1.1" 200 25812
+WARNING 2025-11-25 17:38:55,039 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-11-25 17:38:55,039 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-11-25 17:38:55,605 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-11-25 17:39:07,007 basehttp "GET / HTTP/1.1" 302 0
+INFO 2025-11-25 17:39:07,030 basehttp "GET /unigest/ HTTP/1.1" 200 25810
+WARNING 2025-11-25 17:39:07,165 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-11-25 17:39:07,171 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-11-25 17:39:07,297 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-11-25 17:39:07,419 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-11-25 17:39:11,474 basehttp "GET /admin HTTP/1.1" 301 0
+INFO 2025-11-25 17:39:11,484 basehttp "GET /admin/ HTTP/1.1" 302 0
+INFO 2025-11-25 17:39:11,700 basehttp "GET /admin/login/?next=/admin/ HTTP/1.1" 200 13744
+INFO 2025-11-25 17:39:11,810 basehttp "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2929
+INFO 2025-11-25 17:39:11,813 basehttp "GET /static/admin/js/theme.js HTTP/1.1" 200 1943
+INFO 2025-11-25 17:39:11,826 basehttp "GET /static/admin/css/login.css HTTP/1.1" 200 958
+INFO 2025-11-25 17:39:11,831 basehttp "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2694
+INFO 2025-11-25 17:39:11,832 basehttp "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+INFO 2025-11-25 17:39:11,839 basehttp "GET /static/admin/css/responsive.css HTTP/1.1" 200 18533
+INFO 2025-11-25 17:39:11,841 basehttp "GET /static/admin/css/base.css HTTP/1.1" 200 21207
+INFO 2025-11-25 17:39:19,247 basehttp "POST /admin/login/?next=/admin/ HTTP/1.1" 200 13922
+INFO 2025-11-25 17:44:10,487 autoreload Watching for file changes with StatReloader
+INFO 2025-11-25 17:44:15,057 basehttp "POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+INFO 2025-11-25 17:44:15,174 basehttp "GET /admin/ HTTP/1.1" 200 23100
+INFO 2025-11-25 17:44:15,267 basehttp "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+INFO 2025-11-25 17:44:15,315 basehttp "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+INFO 2025-11-25 17:44:15,316 basehttp "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+INFO 2025-11-25 17:46:54,967 basehttp "GET /admin/core/annoaccademico/ HTTP/1.1" 200 23099
+INFO 2025-11-25 17:46:55,074 basehttp "GET /static/admin/css/changelists.css HTTP/1.1" 200 6566
+INFO 2025-11-25 17:46:55,078 basehttp "GET /static/admin/js/core.js HTTP/1.1" 200 5682
+INFO 2025-11-25 17:46:55,079 basehttp "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 8943
+INFO 2025-11-25 17:46:55,079 basehttp "GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+INFO 2025-11-25 17:46:55,080 basehttp "GET /static/admin/css/forms.css HTTP/1.1" 200 9047
+INFO 2025-11-25 17:46:55,101 basehttp "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 292458
+INFO 2025-11-25 17:46:55,103 basehttp "GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+INFO 2025-11-25 17:46:55,104 basehttp "GET /static/admin/js/actions.js HTTP/1.1" 200 7872
+INFO 2025-11-25 17:46:55,105 basehttp "GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+INFO 2025-11-25 17:46:55,125 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 8183
+INFO 2025-11-25 17:46:55,133 basehttp "GET /static/admin/js/filters.js HTTP/1.1" 200 978
+INFO 2025-11-25 17:46:55,141 basehttp "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 232381
+INFO 2025-11-25 17:46:55,148 basehttp "GET /static/admin/css/widgets.css HTTP/1.1" 200 11900
+INFO 2025-11-25 17:46:55,225 basehttp "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 331
+INFO 2025-11-26 09:07:26,314 autoreload Watching for file changes with StatReloader
+INFO 2025-11-26 09:07:30,733 basehttp "GET /admin/core/annoaccademico/ HTTP/1.1" 200 23100
+INFO 2025-11-26 09:07:31,031 basehttp "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2025-11-26 09:07:31,033 basehttp "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2025-11-26 09:07:31,034 basehttp "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2025-11-26 09:07:31,035 basehttp "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+INFO 2025-11-26 09:07:31,035 basehttp "GET /static/admin/css/forms.css HTTP/1.1" 304 0
+INFO 2025-11-26 09:07:31,048 basehttp "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO 2025-11-26 09:07:31,049 basehttp "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO 2025-11-26 09:07:31,053 basehttp "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO 2025-11-26 09:07:31,060 basehttp "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO 2025-11-26 09:07:31,060 basehttp "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO 2025-11-26 09:07:31,061 basehttp "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO 2025-11-26 09:07:31,069 basehttp "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO 2025-11-26 09:07:31,100 basehttp "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO 2025-11-26 09:07:31,110 basehttp "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2025-11-26 09:07:31,117 basehttp "GET /static/debug_toolbar/css/toolbar.css HTTP/1.1" 304 0
+INFO 2025-11-26 09:07:31,148 basehttp "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2025-11-26 09:07:31,150 basehttp "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2025-11-26 09:07:31,151 basehttp "GET /static/admin/css/widgets.css HTTP/1.1" 200 11900
+INFO 2025-11-26 09:07:31,158 basehttp "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+INFO 2025-11-26 09:07:31,184 basehttp "GET /static/debug_toolbar/js/toolbar.js HTTP/1.1" 304 0
+INFO 2025-11-26 09:07:31,233 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 8183
+INFO 2025-11-26 09:07:31,242 basehttp "GET /static/debug_toolbar/js/utils.js HTTP/1.1" 304 0
+INFO 2025-11-26 09:07:31,396 basehttp "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 331
+INFO 2025-11-26 09:07:31,399 basehttp "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+INFO 2025-11-26 09:07:31,478 basehttp "GET /static/debug_toolbar/css/print.css HTTP/1.1" 200 43
+INFO 2025-11-26 09:07:32,982 basehttp "GET /admin/ HTTP/1.1" 200 23101
+INFO 2025-11-26 09:07:33,075 basehttp "GET /static/admin/css/dashboard.css HTTP/1.1" 304 0
+INFO 2025-11-26 09:07:33,137 basehttp "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+INFO 2025-11-26 09:07:43,753 basehttp "GET / HTTP/1.1" 302 0
+INFO 2025-11-26 09:07:43,935 basehttp "GET /unigest/ HTTP/1.1" 200 25813
+WARNING 2025-11-26 09:07:44,150 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-11-26 09:07:44,154 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-11-26 09:07:44,187 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-11-26 09:08:52,913 basehttp "GET /admin/core/quadrimestre/ HTTP/1.1" 200 22218
+INFO 2025-11-26 09:08:53,038 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 8183
+INFO 2025-11-26 09:08:59,436 basehttp "GET /admin/core/quadrimestre/add/ HTTP/1.1" 200 23154
+INFO 2025-11-26 09:08:59,502 basehttp "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+INFO 2025-11-26 09:08:59,504 basehttp "GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+INFO 2025-11-26 09:08:59,512 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 8183
+INFO 2025-11-26 09:09:10,705 basehttp "POST /admin/core/quadrimestre/add/ HTTP/1.1" 302 0
+INFO 2025-11-26 09:09:10,745 basehttp "GET /admin/core/quadrimestre/add/ HTTP/1.1" 200 23442
+INFO 2025-11-26 09:09:10,860 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 8183
+INFO 2025-11-26 09:09:10,894 basehttp "GET /static/admin/img/icon-yes.svg HTTP/1.1" 200 436
+INFO 2025-11-26 09:09:15,238 basehttp "POST /admin/core/quadrimestre/add/ HTTP/1.1" 302 0
+INFO 2025-11-26 09:09:15,309 basehttp "GET /admin/core/quadrimestre/add/ HTTP/1.1" 200 23442
+INFO 2025-11-26 09:09:15,429 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 8183
+INFO 2025-11-26 09:09:18,409 basehttp "GET /admin/core/quadrimestre/ HTTP/1.1" 200 24210
+INFO 2025-11-26 09:09:18,522 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 8183
+INFO 2025-11-26 09:09:18,564 basehttp "GET /static/admin/img/sorting-icons.svg HTTP/1.1" 200 1097
+INFO 2025-11-26 09:09:30,131 basehttp "GET /admin/core/categoriacorso/ HTTP/1.1" 200 22671
+INFO 2025-11-26 09:09:30,223 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 8183
+INFO 2025-11-26 09:10:22,699 basehttp "GET /admin/core/categoriacorso/add/ HTTP/1.1" 200 24306
+INFO 2025-11-26 09:10:22,972 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 8183
+INFO 2025-11-26 09:10:32,971 basehttp "GET /unigest/ HTTP/1.1" 200 25811
+INFO 2025-11-26 09:10:36,145 basehttp "POST /admin/core/categoriacorso/add/ HTTP/1.1" 302 0
+INFO 2025-11-26 09:10:36,212 basehttp "GET /admin/core/categoriacorso/add/ HTTP/1.1" 200 24575
+INFO 2025-11-26 09:10:36,407 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 8183
+INFO 2025-11-26 09:10:43,799 basehttp "POST /admin/core/categoriacorso/add/ HTTP/1.1" 302 0
+INFO 2025-11-26 09:10:43,867 basehttp "GET /admin/core/categoriacorso/add/ HTTP/1.1" 200 24572
+INFO 2025-11-26 09:10:44,032 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 8183
+INFO 2025-11-26 09:10:58,195 basehttp "POST /admin/core/categoriacorso/add/ HTTP/1.1" 302 0
+INFO 2025-11-26 09:10:58,261 basehttp "GET /admin/core/categoriacorso/add/ HTTP/1.1" 200 24576
+INFO 2025-11-26 09:10:58,441 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 8183
+INFO 2025-11-26 09:11:25,207 basehttp "POST /admin/core/categoriacorso/add/ HTTP/1.1" 302 0
+INFO 2025-11-26 09:11:25,266 basehttp "GET /admin/core/categoriacorso/add/ HTTP/1.1" 200 24578
+INFO 2025-11-26 09:11:25,420 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 8183
+INFO 2025-11-26 09:11:36,382 basehttp "POST /admin/core/categoriacorso/add/ HTTP/1.1" 302 0
+INFO 2025-11-26 09:11:36,455 basehttp "GET /admin/core/categoriacorso/ HTTP/1.1" 200 27121
+INFO 2025-11-26 09:11:36,601 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 8183
+INFO 2025-11-26 09:13:21,392 basehttp "GET /admin/core/annoaccademico/ HTTP/1.1" 200 23098
+INFO 2025-11-26 09:13:21,478 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 8183
+INFO 2025-11-26 09:13:24,539 basehttp "GET /admin/core/annoaccademico/add/ HTTP/1.1" 200 25185
+INFO 2025-11-26 09:13:24,614 basehttp "GET /static/admin/js/calendar.js HTTP/1.1" 200 8466
+INFO 2025-11-26 09:13:24,641 basehttp "GET /static/admin/js/admin/DateTimeShortcuts.js HTTP/1.1" 200 19319
+INFO 2025-11-26 09:13:24,654 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 8183
+INFO 2025-11-26 09:13:24,762 basehttp "GET /static/admin/img/icon-calendar.svg HTTP/1.1" 200 1086
+INFO 2025-11-26 09:13:45,715 basehttp "POST /admin/core/annoaccademico/add/ HTTP/1.1" 200 25457
+INFO 2025-11-26 09:13:45,827 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 8183
+INFO 2025-11-26 09:14:13,625 basehttp "POST /admin/core/annoaccademico/add/ HTTP/1.1" 302 0
+INFO 2025-11-26 09:14:13,678 basehttp "GET /admin/core/annoaccademico/add/ HTTP/1.1" 200 25456
+INFO 2025-11-26 09:14:13,804 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 8183
+INFO 2025-11-26 09:14:32,661 basehttp "POST /admin/core/annoaccademico/add/ HTTP/1.1" 302 0
+INFO 2025-11-26 09:14:32,711 basehttp "GET /admin/core/annoaccademico/add/ HTTP/1.1" 200 25456
+INFO 2025-11-26 09:14:32,871 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 8183
+INFO 2025-11-26 09:14:48,549 basehttp "POST /admin/core/annoaccademico/add/ HTTP/1.1" 302 0
+INFO 2025-11-26 09:14:48,596 basehttp "GET /admin/core/annoaccademico/add/ HTTP/1.1" 200 25456
+INFO 2025-11-26 09:14:48,736 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 8183
+INFO 2025-11-26 09:15:16,912 basehttp "POST /admin/core/annoaccademico/add/ HTTP/1.1" 302 0
+INFO 2025-11-26 09:15:16,970 basehttp "GET /admin/core/annoaccademico/ HTTP/1.1" 200 27053
+INFO 2025-11-26 09:15:17,087 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 8183
+INFO 2025-11-27 09:25:20,420 autoreload Watching for file changes with StatReloader
+INFO 2025-11-27 09:25:33,990 basehttp "GET /admin/core/annoaccademico/add/ HTTP/1.1" 302 0
+INFO 2025-11-27 09:25:34,291 basehttp "GET /admin/login/?next=/admin/core/annoaccademico/add/ HTTP/1.1" 200 13816
+INFO 2025-11-27 09:25:35,545 basehttp "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2025-11-27 09:25:35,552 basehttp "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2025-11-27 09:25:35,572 basehttp "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2025-11-27 09:25:35,652 basehttp "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2025-11-27 09:25:35,654 basehttp "GET /static/admin/css/login.css HTTP/1.1" 304 0
+INFO 2025-11-27 09:25:35,657 basehttp "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2025-11-27 09:25:35,660 basehttp "GET /static/debug_toolbar/css/toolbar.css HTTP/1.1" 304 0
+INFO 2025-11-27 09:25:35,665 basehttp "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2025-11-27 09:25:35,670 basehttp "GET /static/debug_toolbar/js/toolbar.js HTTP/1.1" 304 0
+INFO 2025-11-27 09:25:36,033 basehttp "GET /static/debug_toolbar/js/utils.js HTTP/1.1" 304 0
+INFO 2025-11-27 09:25:36,475 basehttp "GET /unigest/ HTTP/1.1" 200 26197
+WARNING 2025-11-27 09:25:37,010 log Not Found: /favicon.ico
+INFO 2025-11-27 09:25:37,060 basehttp "GET /static/debug_toolbar/css/print.css HTTP/1.1" 304 0
+INFO 2025-11-27 09:25:41,316 basehttp "POST /admin/login/?next=/admin/core/annoaccademico/add/ HTTP/1.1" 302 0
+INFO 2025-11-27 09:25:42,026 basehttp "GET /admin/core/annoaccademico/add/ HTTP/1.1" 200 25187
+INFO 2025-11-27 09:25:42,370 basehttp "GET /static/admin/css/forms.css HTTP/1.1" 304 0
+INFO 2025-11-27 09:25:42,372 basehttp "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO 2025-11-27 09:25:42,374 basehttp "GET /static/admin/js/calendar.js HTTP/1.1" 304 0
+INFO 2025-11-27 09:25:42,375 basehttp "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO 2025-11-27 09:25:42,414 basehttp "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO 2025-11-27 09:25:42,416 basehttp "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO 2025-11-27 09:25:42,424 basehttp "GET /static/admin/js/admin/DateTimeShortcuts.js HTTP/1.1" 304 0
+INFO 2025-11-27 09:25:42,426 basehttp "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO 2025-11-27 09:25:42,431 basehttp "GET /static/admin/css/widgets.css HTTP/1.1" 200 11900
+INFO 2025-11-27 09:25:42,431 basehttp "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO 2025-11-27 09:25:42,464 basehttp "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO 2025-11-27 09:25:42,466 basehttp "GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+INFO 2025-11-27 09:25:42,468 basehttp "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO 2025-11-27 09:25:42,476 basehttp "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+INFO 2025-11-27 09:25:42,479 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 8183
+INFO 2025-11-27 09:25:42,587 basehttp "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+INFO 2025-11-27 09:25:42,879 basehttp "GET /static/admin/img/icon-calendar.svg HTTP/1.1" 200 1086
+INFO 2025-11-27 09:26:47,752 basehttp "GET /unigest/edizioni/ HTTP/1.1" 200 21314
+WARNING 2025-11-27 09:26:47,882 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-11-27 09:26:47,886 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-11-27 09:26:48,036 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-11-27 09:27:04,024 basehttp "GET /unigest/ HTTP/1.1" 200 26196
+WARNING 2025-11-27 09:27:04,130 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-11-27 09:27:04,134 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-11-27 09:27:04,155 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-11-27 09:27:23,244 basehttp "GET /unigest/dashboard/ HTTP/1.1" 200 22545
+WARNING 2025-11-27 09:27:23,352 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-11-27 09:27:23,368 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-11-27 09:27:23,425 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-11-27 09:27:35,234 basehttp "GET /unigest/ HTTP/1.1" 200 26198
+WARNING 2025-11-27 09:27:35,344 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-11-27 09:27:35,352 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-11-27 09:27:35,390 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-11-27 09:27:58,992 basehttp "GET /unigest/ HTTP/1.1" 200 26197
+WARNING 2025-11-27 09:27:59,064 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-11-27 09:27:59,075 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-11-27 09:27:59,113 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-11-27 09:33:36,032 autoreload /home/andrea76/Desktop/UNIGEST_PROJECT/config/settings.py changed, reloading.
+INFO 2025-11-27 09:33:39,236 autoreload Watching for file changes with StatReloader
+INFO 2025-11-27 09:34:55,014 autoreload /home/andrea76/Desktop/UNIGEST_PROJECT/core/views.py changed, reloading.
+INFO 2025-11-27 09:34:55,667 autoreload Watching for file changes with StatReloader
+INFO 2025-11-27 09:38:09,325 autoreload /home/andrea76/Desktop/UNIGEST_PROJECT/core/views.py changed, reloading.
+INFO 2025-11-27 09:38:09,731 autoreload Watching for file changes with StatReloader
+INFO 2025-11-27 09:38:53,123 autoreload /home/andrea76/Desktop/UNIGEST_PROJECT/core/views.py changed, reloading.
+INFO 2025-11-27 09:38:53,606 autoreload Watching for file changes with StatReloader
+INFO 2025-11-27 09:39:58,260 autoreload /home/andrea76/Desktop/UNIGEST_PROJECT/core/views.py changed, reloading.
+INFO 2025-11-27 09:39:58,672 autoreload Watching for file changes with StatReloader
+INFO 2025-11-27 09:40:53,619 autoreload Watching for file changes with StatReloader
+INFO 2025-11-27 09:41:35,258 basehttp "GET /unigest/ HTTP/1.1" 200 32991
+WARNING 2025-11-27 09:41:35,513 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-11-27 09:41:35,541 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-11-27 09:41:35,618 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-11-27 09:41:46,068 basehttp "POST /unigest/anno-accademico/cambia/ HTTP/1.1" 302 0
+INFO 2025-11-27 09:41:46,141 basehttp "GET /unigest/ HTTP/1.1" 200 33290
+WARNING 2025-11-27 09:41:46,196 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-11-27 09:41:46,200 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-11-27 09:41:46,226 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-11-27 09:44:55,056 basehttp "POST /unigest/anno-accademico/cambia/ HTTP/1.1" 302 0
+INFO 2025-11-27 09:44:55,114 basehttp "GET /unigest/ HTTP/1.1" 200 33290
+WARNING 2025-11-27 09:44:55,160 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-11-27 09:44:55,167 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-11-27 09:44:55,212 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-11-27 09:44:58,424 basehttp "POST /unigest/anno-accademico/cambia/ HTTP/1.1" 302 0
+INFO 2025-11-27 09:44:58,468 basehttp "GET /unigest/ HTTP/1.1" 200 33290
+WARNING 2025-11-27 09:44:58,513 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-11-27 09:44:58,518 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-11-27 09:44:58,541 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-11-27 09:45:01,703 basehttp "POST /unigest/anno-accademico/cambia/ HTTP/1.1" 302 0
+INFO 2025-11-27 09:45:01,763 basehttp "GET /unigest/ HTTP/1.1" 200 33288
+WARNING 2025-11-27 09:45:01,800 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-11-27 09:45:01,803 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-11-27 09:45:01,820 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-11-27 09:45:05,366 basehttp "POST /unigest/anno-accademico/cambia/ HTTP/1.1" 302 0
+INFO 2025-11-27 09:45:05,415 basehttp "GET /unigest/ HTTP/1.1" 200 33290
+WARNING 2025-11-27 09:45:05,448 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-11-27 09:45:05,449 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-11-27 09:45:05,467 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-11-27 09:45:11,662 basehttp "POST /unigest/anno-accademico/cambia/ HTTP/1.1" 302 0
+INFO 2025-11-27 09:45:11,715 basehttp "GET /unigest/ HTTP/1.1" 200 33290
+WARNING 2025-11-27 09:45:11,779 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-11-27 09:45:11,784 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-11-27 09:45:11,814 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-11-27 09:46:18,040 basehttp "GET / HTTP/1.1" 302 0
+INFO 2025-11-27 13:44:34,484 autoreload /home/andrea76/Desktop/UNIGEST_PROJECT/core/context_processors.py changed, reloading.
+INFO 2025-11-27 13:44:49,132 autoreload Watching for file changes with StatReloader
+INFO 2025-11-27 13:47:57,077 autoreload /home/andrea76/Desktop/UNIGEST_PROJECT/core/views.py changed, reloading.
+INFO 2025-11-27 13:47:58,031 autoreload Watching for file changes with StatReloader
+INFO 2025-12-16 12:23:18,947 autoreload Watching for file changes with StatReloader
+INFO 2025-12-16 12:27:53,553 autoreload Watching for file changes with StatReloader
+INFO 2025-12-16 12:29:15,206 autoreload /home/andrea76/Desktop/UNIGEST_PROJECT/core/urls.py changed, reloading.
+INFO 2025-12-16 12:29:15,669 autoreload Watching for file changes with StatReloader
+INFO 2025-12-16 13:57:49,577 autoreload Watching for file changes with StatReloader
+INFO 2025-12-16 14:03:18,222 basehttp "GET /unigest/ HTTP/1.1" 200 32993
+INFO 2025-12-16 14:03:20,530 basehttp "GET /static/debug_toolbar/css/toolbar.css HTTP/1.1" 200 12621
+WARNING 2025-12-16 14:03:20,539 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:03:20,544 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+INFO 2025-12-16 14:03:20,731 basehttp "GET /static/debug_toolbar/js/toolbar.js HTTP/1.1" 304 0
+WARNING 2025-12-16 14:03:20,816 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+INFO 2025-12-16 14:03:20,836 basehttp "GET /static/debug_toolbar/js/utils.js HTTP/1.1" 304 0
+WARNING 2025-12-16 14:03:20,981 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:03:21,040 basehttp "GET /static/debug_toolbar/css/print.css HTTP/1.1" 200 43
+ERROR 2025-12-16 14:03:21,622 log Internal Server Error: /unigest/report/
+Traceback (most recent call last):
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/core/views.py", line 630, in report_menu
+    return render(request, 'report/menu.html')
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: report/menu.html
+ERROR 2025-12-16 14:03:21,640 basehttp "GET /unigest/report/ HTTP/1.1" 500 98065
+WARNING 2025-12-16 14:03:21,911 log Not Found: /favicon.ico
+INFO 2025-12-16 14:07:41,608 autoreload /home/andrea76/Desktop/UNIGEST_PROJECT/core/views.py changed, reloading.
+INFO 2025-12-16 14:07:57,317 autoreload Watching for file changes with StatReloader
+INFO 2025-12-16 14:08:08,545 autoreload Watching for file changes with StatReloader
+INFO 2025-12-16 14:08:12,392 basehttp "GET /unigest/ HTTP/1.1" 200 32992
+WARNING 2025-12-16 14:08:12,752 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:08:12,759 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:08:12,863 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:08:15,790 basehttp "GET /unigest/report/ HTTP/1.1" 200 32655
+WARNING 2025-12-16 14:08:15,879 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:08:15,890 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:08:16,064 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:42:00,550 basehttp "GET /unigest/dashboard/ HTTP/1.1" 200 30178
+WARNING 2025-12-16 14:42:00,813 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:42:00,857 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:42:01,006 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:42:13,745 basehttp "GET /unigest/iscritti/ HTTP/1.1" 200 91016
+WARNING 2025-12-16 14:42:13,990 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:42:14,000 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:42:14,217 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:43:19,199 basehttp "GET /unigest/docenti/ HTTP/1.1" 200 41465
+WARNING 2025-12-16 14:43:19,342 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:43:19,365 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:43:23,815 basehttp "GET /unigest/autorita/ HTTP/1.1" 200 28825
+WARNING 2025-12-16 14:43:23,995 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:43:24,028 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:43:24,110 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:43:30,887 basehttp "GET /unigest/autorita/ HTTP/1.1" 200 28824
+WARNING 2025-12-16 14:43:30,991 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:43:30,994 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:43:31,036 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:43:33,798 basehttp "GET /unigest/docenti/ HTTP/1.1" 200 41463
+WARNING 2025-12-16 14:43:33,908 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:43:33,918 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:43:33,957 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:43:45,778 basehttp "GET /unigest/corsi/ HTTP/1.1" 200 28810
+WARNING 2025-12-16 14:43:45,878 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:43:45,879 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:43:45,935 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:43:51,021 basehttp "GET /unigest/corsi/ HTTP/1.1" 200 28809
+WARNING 2025-12-16 14:43:51,060 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:43:51,076 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:43:51,133 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:44:08,338 basehttp "GET /unigest/edizioni/ HTTP/1.1" 200 28096
+WARNING 2025-12-16 14:44:08,443 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:44:08,450 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:44:18,056 basehttp "POST /unigest/anno-accademico/cambia/ HTTP/1.1" 302 0
+INFO 2025-12-16 14:44:18,237 basehttp "GET /unigest/edizioni/ HTTP/1.1" 200 29120
+WARNING 2025-12-16 14:44:18,358 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:44:18,370 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:44:18,434 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:44:23,151 basehttp "GET /unigest/corsi/ HTTP/1.1" 200 28809
+WARNING 2025-12-16 14:44:23,247 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:44:23,286 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:44:27,173 basehttp "GET /unigest/edizioni/ HTTP/1.1" 200 28818
+WARNING 2025-12-16 14:44:27,237 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:44:27,250 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:44:35,144 basehttp "GET /unigest/autorita/ HTTP/1.1" 200 28824
+WARNING 2025-12-16 14:44:35,207 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:44:35,214 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:44:35,241 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:44:52,182 basehttp "GET /unigest/autorita/ HTTP/1.1" 200 28824
+WARNING 2025-12-16 14:44:52,259 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:44:52,264 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:44:52,305 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:44:55,594 basehttp "GET /unigest/corsi/ HTTP/1.1" 200 28809
+WARNING 2025-12-16 14:44:55,661 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:44:55,663 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:44:55,709 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:45:07,710 basehttp "GET /unigest/edizioni/ HTTP/1.1" 200 28818
+WARNING 2025-12-16 14:45:07,762 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:45:07,775 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:45:07,800 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:47:16,008 basehttp "GET /unigest/autorita/ HTTP/1.1" 200 28824
+WARNING 2025-12-16 14:47:16,121 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:47:16,161 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:47:16,216 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:47:21,530 basehttp "GET /unigest/corsi/ HTTP/1.1" 200 28809
+WARNING 2025-12-16 14:47:21,643 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:47:21,670 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:47:21,693 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:48:24,264 basehttp "GET /unigest/edizioni/ HTTP/1.1" 200 28819
+WARNING 2025-12-16 14:48:24,425 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:48:24,467 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:48:24,524 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:48:26,745 basehttp "GET /unigest/corsi/ HTTP/1.1" 200 28809
+WARNING 2025-12-16 14:48:26,836 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:48:26,837 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:48:26,876 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:48:31,913 basehttp "GET /unigest/edizioni/ HTTP/1.1" 200 28818
+WARNING 2025-12-16 14:48:32,015 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:48:32,031 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:48:32,061 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:48:35,278 basehttp "GET /unigest/autorita/ HTTP/1.1" 200 28824
+WARNING 2025-12-16 14:48:35,365 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:48:35,388 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:48:35,432 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:49:28,651 basehttp "GET /unigest/lezioni/ HTTP/1.1" 200 28824
+WARNING 2025-12-16 14:49:28,737 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:49:28,749 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:49:36,602 basehttp "GET /unigest/ HTTP/1.1" 200 32991
+WARNING 2025-12-16 14:49:36,662 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:49:36,670 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:49:36,725 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:50:07,395 basehttp "GET /unigest/corsi/ HTTP/1.1" 200 28809
+WARNING 2025-12-16 14:50:07,468 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:50:07,478 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:50:07,535 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:50:12,463 basehttp "GET /unigest/ HTTP/1.1" 200 32991
+WARNING 2025-12-16 14:50:12,560 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:50:12,571 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:50:12,620 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:50:50,904 basehttp "GET /unigest/iscrizioni-anno/ HTTP/1.1" 200 28851
+WARNING 2025-12-16 14:50:50,995 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:50:51,007 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:50:51,070 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:50:54,044 basehttp "GET /unigest/iscrizioni-anno/?page=2 HTTP/1.1" 200 29159
+WARNING 2025-12-16 14:50:54,186 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:50:54,198 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:50:54,253 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:51:04,883 basehttp "GET /unigest/corsi/ HTTP/1.1" 200 28809
+WARNING 2025-12-16 14:51:04,966 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:51:04,993 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:51:05,020 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:51:10,880 basehttp "GET /unigest/corsi/?page=2 HTTP/1.1" 200 29120
+WARNING 2025-12-16 14:51:10,934 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:51:10,944 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:51:10,989 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:53:16,817 basehttp "GET /unigest/lezioni/ HTTP/1.1" 200 28823
+WARNING 2025-12-16 14:53:16,911 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:53:16,917 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:53:16,970 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:53:20,982 basehttp "GET /unigest/iscrizioni-corso/ HTTP/1.1" 200 28854
+WARNING 2025-12-16 14:53:21,025 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:53:21,027 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:53:21,059 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:53:24,170 basehttp "GET /unigest/iscrizioni-anno/ HTTP/1.1" 200 28848
+WARNING 2025-12-16 14:53:24,245 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:53:24,256 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:53:24,271 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:53:27,974 basehttp "GET /unigest/iscritti/ HTTP/1.1" 200 91012
+WARNING 2025-12-16 14:53:28,052 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:53:28,057 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:53:28,125 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:53:30,088 basehttp "GET /unigest/docenti/ HTTP/1.1" 200 41462
+WARNING 2025-12-16 14:53:30,174 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:53:30,193 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:53:30,262 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 14:53:33,809 basehttp "GET /unigest/autorita/ HTTP/1.1" 200 28824
+WARNING 2025-12-16 14:53:33,878 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 14:53:33,881 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 14:53:33,932 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 15:03:38,476 autoreload Watching for file changes with StatReloader
+ERROR 2025-12-16 15:03:43,346 log Internal Server Error: /unigest/report/
+Traceback (most recent call last):
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/core/views.py", line 647, in report_menu
+    return render(request, 'report/menu.html', context)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/test/utils.py", line 112, in instrumented_test_render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/test/utils.py", line 112, in instrumented_test_render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 63, in render
+    result = block.nodelist.render(context)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 321, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 238, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1070, in render
+    return render_value_in_context(output, context)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1047, in render_value_in_context
+    value = str(value)
+TypeError: __str__ returned non-string (type int)
+ERROR 2025-12-16 15:03:43,472 basehttp "GET /unigest/report/ HTTP/1.1" 500 186927
+INFO 2025-12-16 15:03:46,021 basehttp "GET /unigest/autorita/ HTTP/1.1" 200 41289
+WARNING 2025-12-16 15:03:46,479 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 15:03:46,516 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 15:03:47,671 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 15:03:51,248 basehttp "GET /unigest/autorita/ HTTP/1.1" 200 41287
+WARNING 2025-12-16 15:03:51,314 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 15:03:51,323 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 15:03:51,398 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+ERROR 2025-12-16 16:35:17,771 log Internal Server Error: /unigest/report/
+Traceback (most recent call last):
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/core/views.py", line 647, in report_menu
+    return render(request, 'report/menu.html', context)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/test/utils.py", line 112, in instrumented_test_render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/test/utils.py", line 112, in instrumented_test_render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 63, in render
+    result = block.nodelist.render(context)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 321, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 238, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1070, in render
+    return render_value_in_context(output, context)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1047, in render_value_in_context
+    value = str(value)
+TypeError: __str__ returned non-string (type int)
+ERROR 2025-12-16 16:35:17,961 basehttp "GET /unigest/report/ HTTP/1.1" 500 186977
+INFO 2025-12-16 16:35:44,784 autoreload Watching for file changes with StatReloader
+ERROR 2025-12-16 16:35:47,361 log Internal Server Error: /unigest/report/
+Traceback (most recent call last):
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/core/views.py", line 647, in report_menu
+    return render(request, 'report/menu.html', context)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/test/utils.py", line 112, in instrumented_test_render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/test/utils.py", line 112, in instrumented_test_render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 63, in render
+    result = block.nodelist.render(context)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 321, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 238, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1070, in render
+    return render_value_in_context(output, context)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1047, in render_value_in_context
+    value = str(value)
+TypeError: __str__ returned non-string (type int)
+ERROR 2025-12-16 16:35:47,400 basehttp "GET /unigest/report/ HTTP/1.1" 500 186977
+INFO 2025-12-16 16:36:57,276 autoreload Watching for file changes with StatReloader
+ERROR 2025-12-16 16:37:00,392 log Internal Server Error: /unigest/report/
+Traceback (most recent call last):
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/core/views.py", line 647, in report_menu
+    return render(request, 'report/menu.html', context)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/test/utils.py", line 112, in instrumented_test_render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/test/utils.py", line 112, in instrumented_test_render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 63, in render
+    result = block.nodelist.render(context)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 321, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 238, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1070, in render
+    return render_value_in_context(output, context)
+  File "/home/andrea76/Desktop/UNIGEST_PROJECT/venv/lib/python3.13/site-packages/django/template/base.py", line 1047, in render_value_in_context
+    value = str(value)
+TypeError: __str__ returned non-string (type int)
+ERROR 2025-12-16 16:37:00,540 basehttp "GET /unigest/report/ HTTP/1.1" 500 186928
+INFO 2025-12-16 16:37:58,307 autoreload Watching for file changes with StatReloader
+INFO 2025-12-16 16:38:02,404 basehttp "GET /unigest/report/ HTTP/1.1" 200 174384
+WARNING 2025-12-16 16:38:02,514 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 16:38:02,545 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 16:38:02,936 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 16:38:16,269 basehttp "POST /unigest/anno-accademico/cambia/ HTTP/1.1" 302 0
+INFO 2025-12-16 16:38:16,958 basehttp "GET /unigest/report/ HTTP/1.1" 200 174681
+WARNING 2025-12-16 16:38:17,001 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 16:38:17,014 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 16:38:17,132 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 16:38:22,400 basehttp "GET /unigest/corsi/ HTTP/1.1" 200 41274
+WARNING 2025-12-16 16:38:22,491 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 16:38:22,501 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 16:38:22,558 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 16:38:26,276 basehttp "GET /unigest/edizioni/ HTTP/1.1" 200 48789
+WARNING 2025-12-16 16:38:26,381 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 16:38:26,389 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 16:38:26,467 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 16:38:34,050 basehttp "GET /unigest/iscrizioni-corso/ HTTP/1.1" 200 28911
+WARNING 2025-12-16 16:38:34,118 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 16:38:34,134 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 16:38:34,265 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-16 16:38:45,129 basehttp "GET /unigest/ HTTP/1.1" 200 33051
+WARNING 2025-12-16 16:38:45,425 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-16 16:38:45,435 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-16 16:38:46,002 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-22 09:36:04,274 autoreload Watching for file changes with StatReloader
+INFO 2025-12-22 09:39:17,462 basehttp "GET / HTTP/1.1" 302 0
+INFO 2025-12-22 09:39:17,976 basehttp "GET /unigest/ HTTP/1.1" 200 33051
+WARNING 2025-12-22 09:39:18,220 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-22 09:39:18,226 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+INFO 2025-12-22 09:39:18,234 basehttp "GET /static/debug_toolbar/css/toolbar.css HTTP/1.1" 200 12621
+INFO 2025-12-22 09:39:18,294 basehttp "GET /static/debug_toolbar/js/toolbar.js HTTP/1.1" 304 0
+WARNING 2025-12-22 09:39:18,514 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+INFO 2025-12-22 09:39:18,546 basehttp "GET /static/debug_toolbar/css/print.css HTTP/1.1" 200 43
+INFO 2025-12-22 09:39:18,566 basehttp "GET /static/debug_toolbar/js/utils.js HTTP/1.1" 304 0
+WARNING 2025-12-22 09:39:18,861 log Not Found: /favicon.ico
+INFO 2025-12-22 09:39:30,454 basehttp "POST /unigest/anno-accademico/cambia/ HTTP/1.1" 302 0
+INFO 2025-12-22 09:39:30,572 basehttp "GET /unigest/ HTTP/1.1" 200 33351
+WARNING 2025-12-22 09:39:30,652 basehttp "GET /static/css/style.css HTTP/1.1" 404 1899
+WARNING 2025-12-22 09:39:30,653 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896
+WARNING 2025-12-22 09:39:30,707 basehttp "GET /static/js/script.js HTTP/1.1" 404 1896

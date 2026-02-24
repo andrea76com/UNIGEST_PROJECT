@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}{{ autorita.nome }}{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>{{ autorita.nome }}</h2>
+    <div class="card">
+        <div class="card-body">
+            <p><strong>Carica:</strong> {{ autorita.carica }}</p>
+            <p><strong>Email:</strong> {{ autorita.email }}</p>
+            <p><strong>Indirizzo:</strong> {{ autorita.indirizzo }}</p>
+        </div>
+    </div>
+    <div class="mt-3">
+        <a href="{% url 'core:autorita_update' autorita.pk %}" class="btn btn-warning">Modifica</a>
+        <a href="{% url 'core:autorita_list' %}" class="btn btn-secondary">Torna all'elenco</a>
+    </div>
+</div>
+{% endblock %}

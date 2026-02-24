@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}{{ edizione.corso.nome }}{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>{{ edizione.corso.nome }}</h2>
+    <div class="card">
+        <div class="card-body">
+            <p><strong>Anno:</strong> {{ edizione.anno_accademico.anno }}</p>
+            <p><strong>Docente:</strong> {{ edizione.docente.nome }}</p>
+            <p><strong>Quadrimestre:</strong> {{ edizione.quadrimestre }}</p>
+            <p><strong>Orario:</strong> {{ edizione.giorni_settimana }} {{ edizione.ora_inizio }}-{{ edizione.ora_fine }}</p>
+            <p><strong>Iscritti:</strong> {{ edizione.iscrizioni.count }}</p>
+        </div>
+    </div>
+    <div class="mt-3">
+        <a href="{% url 'core:edizione_update' edizione.pk %}" class="btn btn-warning">Modifica</a>
+        <a href="{% url 'core:edizione_list' %}" class="btn btn-secondary">Torna</a>
+    </div>
+</div>
+{% endblock %}

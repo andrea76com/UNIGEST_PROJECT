@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Autorità{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>Elenco Autorità</h2>
+    <a href="{% url 'core:autorita_create' %}" class="btn btn-success mb-3">Nuova Autorità</a>
+    <table class="table table-striped">
+        <thead>
+            <tr><th>Nome</th><th>Carica</th><th>Email</th><th>Azioni</th></tr>
+        </thead>
+        <tbody>
+            {% for aut in autorita %}
+            <tr>
+                <td><a href="{% url 'core:autorita_detail' aut.pk %}">{{ aut.nome }}</a></td>
+                <td>{{ aut.carica }}</td>
+                <td>{{ aut.email }}</td>
+                <td>
+                    <a href="{% url 'core:autorita_detail' aut.pk %}" class="btn btn-sm btn-info">Dettagli</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

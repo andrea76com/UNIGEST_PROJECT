@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% block title %}Statistiche {{ anno.anno }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2><i class="bi bi-bar-chart-fill text-primary"></i> Statistiche Anno Accademico {{ anno.anno }}</h2>
+    <hr>
+
+    <!-- Card statistiche generali -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card border-primary">
+                <div class="card-body text-center">
+                    <i class="bi bi-people-fill text-primary" style="font-size: 2rem;"></i>
+                    <h3 class="mt-2">{{ totale_iscritti }}</h3>
+                    <p class="text-muted mb-0">Iscritti Anno</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <i class="bi bi-book-fill text-success" style="font-size: 2rem;"></i>
+                    <h3 class="mt-2">{{ totale_edizioni }}</h3>
+                    <p class="text-muted mb-0">Edizioni Corsi</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-info">
+                <div class="card-body text-center">
+                    <i class="bi bi-card-checklist text-info" style="font-size: 2rem;"></i>
+                    <h3 class="mt-2">{{ totale_iscrizioni_corso }}</h3>
+                    <p class="text-muted mb-0">Iscrizioni Corsi</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-warning">
+                <div class="card-body text-center">
+                    <i class="bi bi-journal-text text-warning" style="font-size: 2rem;"></i>
+                    <h3 class="mt-2">{{ totale_lezioni }}</h3>
+                    <p class="text-muted mb-0">Lezioni</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Iscrizioni per categoria -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <i class="bi bi-pie-chart-fill"></i> Iscrizioni per Categoria
+        </div>
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Categoria</th>
+                        <th class="text-center">Edizioni</th>
+                        <th class="text-center">Iscritti</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cat in per_categoria %}
+                    <tr>
+                        <td><strong>{{ cat.corso__categoria__nome }}</strong></td>
+                        <td class="text-center">{{ cat.num_edizioni }}</td>
+                        <td class="text-center">
+                            <span class="badge bg-success">{{ cat.num_iscritti }}</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Top 10 corsi -->
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+            <i class="bi bi-trophy-fill"></i> Top 10 Corsi più Frequentati
+        </div>
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Corso</th>
+                        <th>Docente</th>
+                        <th class="text-center">Iscritti</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ed in top_corsi %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            <a href="{% url 'core:edizione_detail' ed.pk %}">
+                                {{ ed.corso.nome }}
+                            </a>
+                        </td>
+                        <td>{{ ed.docente.nome }}</td>
+                        <td class="text-center">
+                            <span class="badge bg-success">{{ ed.num_iscritti }}</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Presenza media -->
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle-fill"></i>
+        <strong>Presenza Media alle Lezioni:</strong> {{ presenza_media|floatformat:1 }} studenti
+    </div>
+
+    <!-- Pulsanti export -->
+    <div class="text-center mt-4">
+        <a href="{% url 'core:elenco_corsi_anno_pdf' anno.id %}" class="btn btn-danger">
+            <i class="bi bi-file-pdf"></i> Scarica Report PDF
+        </a>
+        <a href="{% url 'core:rubrica_contatti_pdf' anno.id %}" class="btn btn-secondary">
+            <i class="bi bi-telephone"></i> Rubrica Contatti PDF
+        </a>
+    </div>
+</div>
+{% endblock %}

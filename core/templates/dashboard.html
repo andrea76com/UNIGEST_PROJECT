@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - UNIGEST{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="bi bi-graph-up text-primary"></i> Dashboard Statistiche</h2>
+            {% if anno_attivo %}
+            <p class="text-muted">Anno Accademico: <strong>{{ anno_attivo.anno }}</strong></p>
+            {% endif %}
+            <hr>
+        </div>
+    </div>
+    
+    {% if not anno_attivo %}
+    <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        Nessun anno accademico attivo. Le statistiche potrebbero non essere disponibili.
+    </div>
+    {% else %}
+    
+    <!-- Statistiche Iscrizioni -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card border-primary stat-card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-check-fill text-primary" style="font-size: 3rem;"></i>
+                    <h2 class="mt-3 mb-0">{{ iscritti_anno }}</h2>
+                    <p class="text-muted">Iscritti Anno Corrente</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card border-success stat-card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-calendar-event-fill text-success" style="font-size: 3rem;"></i>
+                    <h2 class="mt-3 mb-0">{{ edizioni_per_categoria|length }}</h2>
+                    <p class="text-muted">Categorie Corsi Attive</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card border-info stat-card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-book-fill text-info" style="font-size: 3rem;"></i>
+                    <h2 class="mt-3 mb-0">
+                        {% for cat in edizioni_per_categoria %}
+                        {{ cat.totale }}{% if not forloop.last %}+{% endif %}
+                        {% endfor %}
+                    </h2>
+                    <p class="text-muted">Edizioni Corsi Totali</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edizioni per Categoria -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <i class="bi bi-pie-chart-fill"></i> Distribuzione Edizioni per Categoria
+                </div>
+                <div class="card-body">
+                    {% if edizioni_per_categoria %}
+                    <div class="row">
+                        {% for cat in edizioni_per_categoria %}
+                        <div class="col-md-3 mb-3">
+                            <div class="text-center p-3 border rounded">
+                                <h4 class="mb-0">{{ cat.totale }}</h4>
+                                <p class="text-muted mb-0">{{ cat.corso__categoria__nome|default:"Non categorizzato" }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted text-center">Nessuna edizione attiva</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Corsi più Frequentati -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <i class="bi bi-trophy-fill"></i> Top 10 Corsi più Frequentati
+                    {% if anno_attivo %}
+                        - {{ anno_attivo.anno }}
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {% if corsi_piu_frequentati %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Corso</th>
+                                    <th>Categoria</th>
+                                    <th>Quadrimestre</th>
+                                    <th>Docente</th>
+                                    <th class="text-center">Iscritti</th>
+                                    <th>Azioni</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for edizione in corsi_piu_frequentati %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>
+                                        <a href="{% url 'core:edizione_detail' edizione.pk %}">
+                                            <strong>{{ edizione.corso.nome }}</strong>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        {% if edizione.corso.categoria %}
+                                        <span class="badge bg-info">
+                                            {{ edizione.corso.categoria.nome }}
+                                        </span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">Non categorizzato</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ edizione.quadrimestre }}</td>
+                                    <td>{{ edizione.docente.nome }}</td>
+                                    <td class="text-center">
+                                        <span class="badge bg-success" style="font-size: 1rem;">
+                                            {{ edizione.num_iscritti }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'core:edizione_detail' edizione.pk %}"
+                                        class="btn btn-sm btn-info">
+                                            <i class="bi bi-eye"></i> Dettagli
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning text-center">
+                        <i class="bi bi-info-circle"></i>
+                        Nessun corso con iscrizioni per l'anno {{ anno_attivo.anno }}
+                    </div>
+
+                    <!-- Debug info -->
+                    <div class="mt-3 p-3 bg-light border rounded">
+                        <h6>Informazioni Debug:</h6>
+                        <p class="mb-1"><strong>Anno selezionato:</strong> {{ anno_attivo.anno }}</p>
+                        <p class="mb-1"><strong>Edizioni totali anno:</strong> {{ edizioni_anno_corrente|default:"0" }}</p>
+                        <p class="mb-0"><strong>Iscrizioni anno:</strong> {{ iscritti_anno|default:"0" }}</p>
+                        <a href="{% url 'core:edizione_list' %}" class="btn btn-sm btn-primary mt-2">
+                            Vedi tutte le edizioni
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Azioni Rapide -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-warning">
+                    <i class="bi bi-lightning-fill"></i> Azioni Rapide
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <a href="{% url 'core:edizione_list' %}" class="btn btn-outline-primary w-100">
+                                <i class="bi bi-list-ul"></i> Vedi Tutte le Edizioni
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{% url 'core:iscrizione_corso_create' %}" class="btn btn-outline-success w-100">
+                                <i class="bi bi-plus-circle"></i> Nuova Iscrizione Corso
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{% url 'core:lezione_create' %}" class="btn btn-outline-info w-100">
+                                <i class="bi bi-journal-plus"></i> Registra Lezione
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{% url 'core:report_menu' %}" class="btn btn-outline-danger w-100">
+                                <i class="bi bi-file-earmark-text"></i> Vai ai Report
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% endif %}
+</div>
+{% endblock %}

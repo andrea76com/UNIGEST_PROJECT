@@ -1,0 +1,43 @@
+UNIGEST - Fix Import Log
+======================================================================
+======================================================================
+UNIGEST - Fix Import Iscrizioni e Edizioni
+======================================================================
+
+🚀 Inizio fix import...
+
+📚 Fix Edizioni Mancanti...
+✅ 0 nuove, 492 esistenti, 1580 errori
+
+📋 Dettaglio errori:
+  • Quadrimestre non trovato: 3: 852 volte
+  • Docente non trovato: 0: 246 volte
+  • ['Il valore di "9,00" ha un formato non valido. De: 101 volte
+  • Quadrimestre non trovato: 0: 64 volte
+  • Quadrimestre non trovato: None: 49 volte
+
+📝 Fix Iscrizioni Corso...
+  Iscrizioni potenzialmente importabili: 3517
+  Totale record da processare: 3517
+  Progresso: 2000/3517 (56.9%) - Importate: 0
+✅ 0 importate, 827 duplicate, 2690 errori
+
+======================================================================
+VERIFICA FINALE DATABASE
+======================================================================
+  Anni Accademici:      27
+  Iscritti:             2329
+  Docenti:              350
+  Corsi:                450
+  Edizioni Corsi:       492
+  Iscrizioni Anno:      11463
+  Iscrizioni Corso:     827
+  Lezioni:              1324
+
+📊 Verifica Anno 2023-2024:
+  - Edizioni: 32
+  - Iscrizioni: 0
+======================================================================
+
+✅ Fix completato!
+📄 Log salvato in: fix_import_log.txt

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Docenti{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>Elenco Docenti</h2>
+    <a href="{% url 'core:docente_create' %}" class="btn btn-success mb-3">Nuovo Docente</a>
+    <table class="table table-striped">
+        <thead>
+            <tr><th>Nome</th><th>Email</th><th>Cellulare</th><th>Azioni</th></tr>
+        </thead>
+        <tbody>
+            {% for doc in docenti %}
+            <tr>
+                <td><a href="{% url 'core:docente_detail' doc.pk %}">{{ doc.nome }}</a></td>
+                <td>{{ doc.email }}</td>
+                <td>{{ doc.cellulare }}</td>
+                <td>
+                    <a href="{% url 'core:docente_detail' doc.pk %}" class="btn btn-sm btn-info">Dettagli</a>
+                    <a href="{% url 'core:docente_update' doc.pk %}" class="btn btn-sm btn-warning">Modifica</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

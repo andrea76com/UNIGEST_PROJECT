@@ -1,0 +1,256 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+{% if object %}Modifica Iscritto{% else %}Nuovo Iscritto{% endif %} - UNIGEST
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>
+                <i class="bi bi-person-plus text-primary"></i>
+                {% if object %}
+                    Modifica Iscritto: {{ object.nominativo }}
+                {% else %}
+                    Nuovo Iscritto
+                {% endif %}
+            </h2>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'core:iscritto_list' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Annulla
+            </a>
+        </div>
+    </div>
+    
+    <form method="post" novalidate>
+        {% csrf_token %}
+        
+        <!-- Errori Generali -->
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+        
+        <!-- Sezione Dati Anagrafici -->
+        <div class="card mb-3">
+            <div class="card-header bg-primary text-white">
+                <i class="bi bi-person-badge"></i> Dati Anagrafici
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-2">
+                        <label class="form-label">{{ form.sesso.label }} *</label>
+                        {% render_field form.sesso class="form-select" %}
+                        {% if form.sesso.errors %}
+                        <div class="text-danger small">{{ form.sesso.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <label class="form-label">{{ form.titolo.label }}</label>
+                        {% render_field form.titolo class="form-control" %}
+                    </div>
+                    
+                    <div class="col-md-8">
+                        <label class="form-label">{{ form.nominativo.label }} *</label>
+                        {% render_field form.nominativo class="form-control" %}
+                        {% if form.nominativo.errors %}
+                        <div class="text-danger small">{{ form.nominativo.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label class="form-label">{{ form.codice_fiscale.label }}</label>
+                        {% render_field form.codice_fiscale class="form-control" %}
+                        {% if form.codice_fiscale.errors %}
+                        <div class="text-danger small">{{ form.codice_fiscale.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label class="form-label">{{ form.luogo_nascita.label }}</label>
+                        {% render_field form.luogo_nascita class="form-control" %}
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label class="form-label">{{ form.data_nascita.label }}</label>
+                        {% render_field form.data_nascita class="form-control" %}
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="form-label">{{ form.situazione.label }}</label>
+                        {% render_field form.situazione class="form-select" %}
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="form-label">{{ form.coniuge.label }}</label>
+                        {% render_field form.coniuge class="form-select" %}
+                        <small class="text-muted">Solo se il coniuge è iscritto</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sezione Residenza -->
+        <div class="card mb-3">
+            <div class="card-header bg-success text-white">
+                <i class="bi bi-geo-alt"></i> Residenza
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        <label class="form-label">{{ form.indirizzo.label }}</label>
+                        {% render_field form.indirizzo class="form-control" %}
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label class="form-label">{{ form.comune.label }}</label>
+                        {% render_field form.comune class="form-select" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sezione Contatti -->
+        <div class="card mb-3">
+            <div class="card-header bg-info text-white">
+                <i class="bi bi-telephone"></i> Contatti
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">{{ form.telefono.label }}</label>
+                        {% render_field form.telefono class="form-control" %}
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label class="form-label">{{ form.cellulare.label }}</label>
+                        {% render_field form.cellulare class="form-control" %}
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label class="form-label">{{ form.email.label }}</label>
+                        {% render_field form.email class="form-control" %}
+                        {% if form.email.errors %}
+                        <div class="text-danger small">{{ form.email.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            {% render_field form.ha_whatsapp class="form-check-input" %}
+                            <label class="form-check-label" for="{{ form.ha_whatsapp.id_for_label }}">
+                                {{ form.ha_whatsapp.label }}
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            {% render_field form.riceve_posta class="form-check-input" %}
+                            <label class="form-check-label" for="{{ form.riceve_posta.id_for_label }}">
+                                {{ form.riceve_posta.label }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sezione Istruzione/Professione -->
+        <div class="card mb-3">
+            <div class="card-header bg-warning">
+                <i class="bi bi-briefcase"></i> Istruzione e Professione
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">{{ form.titolo_studio.label }}</label>
+                        {% render_field form.titolo_studio class="form-select" %}
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label class="form-label">{{ form.professione_attuale.label }}</label>
+                        {% render_field form.professione_attuale class="form-select" %}
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label class="form-label">{{ form.professione_passata.label }}</label>
+                        {% render_field form.professione_passata class="form-select" %}
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="form-check">
+                            {% render_field form.e_pensionato class="form-check-input" %}
+                            <label class="form-check-label" for="{{ form.e_pensionato.id_for_label }}">
+                                {{ form.e_pensionato.label }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sezione Flags Speciali -->
+        <div class="card mb-3">
+            <div class="card-header bg-secondary text-white">
+                <i class="bi bi-flag"></i> Ruoli Speciali
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            {% render_field form.e_assistente class="form-check-input" %}
+                            <label class="form-check-label" for="{{ form.e_assistente.id_for_label }}">
+                                {{ form.e_assistente.label }}
+                            </label>
+                            <small class="text-muted d-block">Può essere selezionato come assistente dei corsi</small>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            {% render_field form.e_collaboratore class="form-check-input" %}
+                            <label class="form-check-label" for="{{ form.e_collaboratore.id_for_label }}">
+                                {{ form.e_collaboratore.label }}
+                            </label>
+                            <small class="text-muted d-block">Collabora con la segreteria</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sezione Note -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <i class="bi bi-sticky"></i> Note
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <label class="form-label">{{ form.note.label }}</label>
+                        {% render_field form.note class="form-control" rows="4" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pulsanti -->
+        <div class="card">
+            <div class="card-body text-center">
+                <button type="submit" class="btn btn-success btn-lg">
+                    <i class="bi bi-save"></i> Salva Iscritto
+                </button>
+                <a href="{% url 'core:iscritto_list' %}" class="btn btn-secondary btn-lg">
+                    <i class="bi bi-x-circle"></i> Annulla
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

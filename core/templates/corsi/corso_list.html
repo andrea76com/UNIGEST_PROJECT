@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Corsi{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>Elenco Corsi</h2>
+    <a href="{% url 'core:corso_create' %}" class="btn btn-success mb-3">Nuovo Corso</a>
+    <table class="table table-striped">
+        <thead>
+            <tr><th>Codice</th><th>Nome</th><th>Categoria</th><th>Azioni</th></tr>
+        </thead>
+        <tbody>
+            {% for corso in corsi %}
+            <tr>
+                <td>{{ corso.codice }}</td>
+                <td><a href="{% url 'core:corso_detail' corso.pk %}">{{ corso.nome }}</a></td>
+                <td>{{ corso.categoria.nome|default:"-" }}</td>
+                <td>
+                    <a href="{% url 'core:corso_detail' corso.pk %}" class="btn btn-sm btn-info">Dettagli</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

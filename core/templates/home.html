@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - UNIGEST{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-4">
+                <i class="bi bi-house-door-fill text-primary"></i> 
+                Benvenuto in UNIGEST
+            </h1>
+            <p class="lead text-muted">
+                Sistema di gestione per l'Università degli Adulti
+            </p>
+            <hr>
+        </div>
+    </div>
+    
+    <!-- Anno Accademico Corrente -->
+    {% if anno_attivo %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-info d-flex align-items-center">
+                <i class="bi bi-calendar-event-fill fs-3 me-3"></i>
+                <div>
+                    <h5 class="alert-heading mb-1">Anno Accademico Corrente</h5>
+                    <p class="mb-0">
+                        <strong>{{ anno_attivo.anno }}</strong> 
+                        (dal {{ anno_attivo.data_inizio|date:"d/m/Y" }} al {{ anno_attivo.data_fine|date:"d/m/Y" }})
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <strong>Attenzione:</strong> Nessun anno accademico attivo. 
+                Vai all'<a href="{% url 'admin:core_annoaccademico_changelist' %}" class="alert-link">amministrazione</a> per attivarne uno.
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Statistiche Rapide -->
+    <div class="row g-3 mb-4">
+        <!-- Totale Iscritti -->
+        <div class="col-md-3">
+            <div class="card border-primary shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-people-fill text-primary" style="font-size: 3rem;"></i>
+                    <h2 class="mt-2 mb-0">{{ totale_iscritti }}</h2>
+                    <p class="text-muted mb-0">Iscritti Totali</p>
+                    <a href="{% url 'core:iscritto_list' %}" class="btn btn-sm btn-outline-primary mt-2">
+                        Visualizza <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Totale Docenti -->
+        <div class="col-md-3">
+            <div class="card border-success shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-badge-fill text-success" style="font-size: 3rem;"></i>
+                    <h2 class="mt-2 mb-0">{{ totale_docenti }}</h2>
+                    <p class="text-muted mb-0">Docenti Attivi</p>
+                    <a href="{% url 'core:docente_list' %}" class="btn btn-sm btn-outline-success mt-2">
+                        Visualizza <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Totale Corsi -->
+        <div class="col-md-3">
+            <div class="card border-warning shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-book-fill text-warning" style="font-size: 3rem;"></i>
+                    <h2 class="mt-2 mb-0">{{ totale_corsi }}</h2>
+                    <p class="text-muted mb-0">Corsi Disponibili</p>
+                    <a href="{% url 'core:corso_list' %}" class="btn btn-sm btn-outline-warning mt-2">
+                        Visualizza <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Iscritti Anno Corrente -->
+        <div class="col-md-3">
+            <div class="card border-info shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-check-fill text-info" style="font-size: 3rem;"></i>
+                    <h2 class="mt-2 mb-0">{{ iscritti_anno_corrente|default:"0" }}</h2>
+                    <p class="text-muted mb-0">Iscritti Anno Corrente</p>
+                    <a href="{% url 'core:iscrizione_anno_list' %}" class="btn btn-sm btn-outline-info mt-2">
+                        Visualizza <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Azioni Rapide -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h3><i class="bi bi-lightning-fill text-warning"></i> Azioni Rapide</h3>
+            <hr>
+        </div>
+    </div>
+    
+    <div class="row g-3">
+        <!-- Nuovo Iscritto -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-person-plus-fill text-primary"></i> Nuovo Iscritto
+                    </h5>
+                    <p class="card-text">Aggiungi un nuovo iscritto all'anagrafica</p>
+                    <a href="{% url 'core:iscritto_create' %}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Crea Iscritto
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Nuova Edizione Corso -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-calendar-plus-fill text-success"></i> Nuova Edizione Corso
+                    </h5>
+                    <p class="card-text">Crea una nuova edizione di un corso</p>
+                    <a href="{% url 'core:edizione_create' %}" class="btn btn-success">
+                        <i class="bi bi-plus-circle"></i> Crea Edizione
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Gestione Iscrizioni -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-card-checklist text-info"></i> Gestione Iscrizioni
+                    </h5>
+                    <p class="card-text">Gestisci le iscrizioni agli anni e ai corsi</p>
+                    <a href="{% url 'core:iscrizione_anno_create' %}" class="btn btn-info">
+                        <i class="bi bi-plus-circle"></i> Nuova Iscrizione
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Registro Lezioni -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-journal-text text-warning"></i> Registro Lezioni
+                    </h5>
+                    <p class="card-text">Registra una nuova lezione e le presenze</p>
+                    <a href="{% url 'core:lezione_create' %}" class="btn btn-warning">
+                        <i class="bi bi-plus-circle"></i> Nuova Lezione
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Report e Statistiche -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-bar-chart-fill text-danger"></i> Report e Statistiche
+                    </h5>
+                    <p class="card-text">Visualizza report e statistiche dettagliate</p>
+                    <a href="{% url 'core:report_menu' %}" class="btn btn-danger">
+                        <i class="bi bi-file-earmark-text"></i> Vai ai Report
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Amministrazione -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-gear-fill text-secondary"></i> Amministrazione
+                    </h5>
+                    <p class="card-text">Accedi al pannello di amministrazione Django</p>
+                    <a href="{% url 'admin:index' %}" class="btn btn-secondary" target="_blank">
+                        <i class="bi bi-box-arrow-up-right"></i> Apri Admin
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dashboard Link -->
+    {% if anno_attivo %}
+    <div class="row mt-4">
+        <div class="col-12 text-center">
+            <a href="{% url 'core:dashboard' %}" class="btn btn-lg btn-outline-primary">
+                <i class="bi bi-graph-up"></i> Visualizza Dashboard Completa
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

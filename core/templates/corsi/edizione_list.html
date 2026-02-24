@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Edizioni Corsi{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>Edizioni Corsi - {{ anno_attivo.anno }}</h2>
+    <a href="{% url 'core:edizione_create' %}" class="btn btn-success mb-3">Nuova Edizione</a>
+    <table class="table table-striped">
+        <thead>
+            <tr><th>Corso</th><th>Docente</th><th>Q</th><th>Giorni</th><th>Orario</th><th>Iscritti</th><th>Azioni</th></tr>
+        </thead>
+        <tbody>
+            {% for ed in edizioni %}
+            <tr>
+                <td><a href="{% url 'core:edizione_detail' ed.pk %}">{{ ed.corso.nome }}</a></td>
+                <td>{{ ed.docente.nome }}</td>
+                <td>{{ ed.quadrimestre.numero }}</td>
+                <td>{{ ed.giorni_settimana }}</td>
+                <td>{{ ed.ora_inizio }}-{{ ed.ora_fine }}</td>
+                <td><span class="badge bg-success">{{ ed.num_iscritti }}</span></td>
+                <td>
+                    <a href="{% url 'core:edizione_detail' ed.pk %}" class="btn btn-sm btn-info">Dettagli</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
