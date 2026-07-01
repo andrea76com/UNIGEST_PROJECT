@@ -27,7 +27,10 @@ django-widget-tweaks==1.5.0
 django-filter==23.3
 
 # Libreria per paginazione avanzata
-django-bootstrap-pagination==1.7.2
+django-bootstrap-pagination==1.7.1
+
+# Connettore alternativo MySQL (richiesto in config/__init__.py)
+pymysql==1.2.0
 
 # Pillow per gestione immagini (se necessario in futuro)
 Pillow==10.1.0
