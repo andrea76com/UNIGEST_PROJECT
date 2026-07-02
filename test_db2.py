@@ -15,17 +15,17 @@ try:
         charset='utf8mb4'
     )
     print("✅ Connessione riuscita!")
-    
+
     cursor = connection.cursor()
     cursor.execute("SELECT DATABASE();")
     db_name = cursor.fetchone()
     print(f"✅ Database attivo: {db_name[0]}")
-    
+
     cursor.execute("SELECT USER();")
     user = cursor.fetchone()
     print(f"✅ Utente connesso: {user[0]}")
-    
+
     connection.close()
-    
+
 except Exception as e:
     print(f"❌ ERRORE: {e}")
