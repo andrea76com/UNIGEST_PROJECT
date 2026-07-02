@@ -941,3 +941,4 @@ INFO 2026-07-02 11:12:43,145 basehttp "GET /static/admin/css/base.css HTTP/1.1" 
 INFO 2026-07-02 11:12:43,173 basehttp "GET /static/admin/css/responsive.css HTTP/1.1" 200 18533
 INFO 2026-07-02 11:12:46,824 basehttp "POST /admin/login/?next=/admin/core/annoaccademico/ HTTP/1.1" 200 13982
 INFO 2026-07-02 11:13:02,866 basehttp "POST /admin/login/?next=/admin/core/annoaccademico/ HTTP/1.1" 200 13982
+INFO 2026-07-02 11:18:03,188 basehttp "GET /unigest/ HTTP/1.1" 200 26412
