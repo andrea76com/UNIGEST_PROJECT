@@ -76,36 +76,33 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING('MODALITÀ DRY-RUN: I dati non verranno salvati\n'))
         
         try:
-            # Esegui importazione in transazione
-            with transaction.atomic():
-                # 1. Importa tabelle di supporto
-                self.import_comuni()
-                self.import_titoli_studio()
-                self.import_professioni()
-                
-                # 2. Importa anagrafiche
-                self.import_docenti()
-                self.import_autorita()
-                self.import_iscritti()
-                
-                # 3. Importa corsi
-                self.import_categorie()
-                self.import_gruppi()
-                self.import_corsi()
-                self.import_anni_accademici()
-                self.import_quadrimestri()
-                
-                # 4. Importa edizioni e iscrizioni
-                self.import_edizioni_corsi()
-                self.import_iscrizioni_anno()
-                self.import_iscrizioni_corso()
-                
-                # 5. Importa lezioni e presenze
-                self.import_lezioni()
-                
-                # Se è dry-run, rollback
-                if self.dry_run:
-                    raise Exception("DRY-RUN: Rollback transaction")
+            # 1. Importa tabelle di supporto
+            self.import_comuni()
+            self.import_titoli_studio()
+            self.import_professioni()
+
+            # 2. Importa anagrafiche
+            self.import_docenti()
+            self.import_autorita()
+            self.import_iscritti()
+
+            # 3. Importa corsi
+            self.import_categorie()
+            self.import_gruppi()
+            self.import_corsi()
+            self.import_anni_accademici()
+            self.import_quadrimestri()
+
+            # 4. Importa edizioni e iscrizioni
+            self.import_edizioni_corsi()
+            self.import_iscrizioni_anno()
+            self.import_iscrizioni_corso()
+
+            # 5. Importa lezioni e presenze
+            self.import_lezioni()
+
+            if self.dry_run:
+                self.stdout.write(self.style.WARNING('\n✓ Simulazione completata.'))
         
         except Exception as e:
             if self.dry_run:
