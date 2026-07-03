@@ -1,16 +1,15 @@
 """
 UNIGEST - Import Old Data Command
 File: core/management/commands/import_old_data.py
-Descrizione: Script per importare i dati dal vecchio database Access/MySQL
+Descrizione: Script ottimizzato per importare i dati dal vecchio database Access/MySQL.
+Include correzioni per il formato degli anni accademici e logiche dagli script utente.
 
 Utilizzo:
-    python manage.py import_old_data
-    
-Opzioni:
-    --dry-run : Simula l'importazione senza salvare i dati
-    --verbose : Mostra dettagli aggiuntivi durante l'importazione
+    python manage.py import_old_data [--verbose] [--dry-run]
 """
 
+import logging
+from datetime import datetime
 from django.core.management.base import BaseCommand
 from django.db import connections, transaction
 from core.models import (
@@ -20,611 +19,332 @@ from core.models import (
     EdizioneCorso, IscrizioneAnnoAccademico, IscrizioneCorso,
     Lezione, PresenzaLezione
 )
-from datetime import datetime
-import logging
 
 logger = logging.getLogger(__name__)
 
-
 class Command(BaseCommand):
-    help = 'Importa i dati dal vecchio database MySQL'
-    
+    help = 'Importa i dati dal vecchio database MySQL UNIPIEVE'
+
     def add_arguments(self, parser):
         parser.add_argument(
             '--dry-run',
             action='store_true',
-            help='Simula l\'importazione senza salvare',
+            help='Simula l\'importazione senza salvare modifiche definitive (usa get_or_create)',
         )
         parser.add_argument(
             '--verbose',
             action='store_true',
-            help='Mostra dettagli aggiuntivi',
+            help='Mostra dettagli aggiuntivi durante l\'importazione',
         )
-    
-    def __init__(self):
-        super().__init__()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.dry_run = False
         self.verbose = False
         self.stats = {
-            'comuni': 0,
-            'titoli_studio': 0,
-            'professioni_attuali': 0,
-            'professioni_passate': 0,
-            'iscritti': 0,
-            'docenti': 0,
-            'autorita': 0,
-            'categorie': 0,
-            'gruppi': 0,
-            'corsi': 0,
-            'anni': 0,
-            'edizioni': 0,
-            'iscrizioni_anno': 0,
-            'iscrizioni_corso': 0,
-            'lezioni': 0,
-            'errori': 0
+            'comuni': 0, 'titoli': 0, 'prof_att': 0, 'prof_pass': 0,
+            'iscritti': 0, 'docenti': 0, 'autorita': 0,
+            'categorie': 0, 'gruppi': 0, 'corsi': 0,
+            'anni': 0, 'edizioni': 0, 'isc_anno': 0, 'isc_corso': 0,
+            'lezioni': 0, 'errori': 0
         }
-    
+
+    def log(self, msg, level='info'):
+        if level == 'error':
+            self.stdout.write(self.style.ERROR(f"  ✗ {msg}"))
+        elif level == 'warning':
+            self.stdout.write(self.style.WARNING(f"  ⚠️ {msg}"))
+        elif level == 'success':
+            self.stdout.write(self.style.SUCCESS(f"  ✓ {msg}"))
+        else:
+            if self.verbose or level == 'important':
+                self.stdout.write(f"  • {msg}")
+
     def handle(self, *args, **options):
         self.dry_run = options['dry_run']
         self.verbose = options['verbose']
-        
+
         self.stdout.write(self.style.SUCCESS('\n' + '='*70))
-        self.stdout.write(self.style.SUCCESS('UNIGEST - Importazione Dati dal Vecchio Database'))
+        self.stdout.write(self.style.SUCCESS('  UNIGEST - IMPORTAZIONE DATI OTTIMIZZATA'))
         self.stdout.write(self.style.SUCCESS('='*70 + '\n'))
-        
+
         if self.dry_run:
-            self.stdout.write(self.style.WARNING('MODALITÀ DRY-RUN: I dati verranno simulati (uso di get_or_create)\n'))
-        
-        try:
-            # Rimosso transaction.atomic() globale per evitare TransactionManagementError in caso di errori singoli
-            # 1. Importa tabelle di supporto
-            self.import_comuni()
-            self.import_titoli_studio()
-            self.import_professioni()
+            self.stdout.write(self.style.WARNING('!!! MODALITÀ DRY-RUN ATTIVA !!!\n'))
 
-            # 2. Importa anagrafiche
-            self.import_docenti()
-            self.import_autorita()
-            self.import_iscritti()
+        # Ordine di esecuzione per rispettare i ForeignKey
+        tasks = [
+            ('Tabelle di Supporto', self.import_supporto),
+            ('Anagrafiche (Docenti, Autorità)', self.import_staff),
+            ('Iscritti e Coniugi', self.import_iscritti),
+            ('Catalogo Corsi', self.import_catalogo),
+            ('Anni e Quadrimestri', self.import_periodi),
+            ('Edizioni Corsi Annuali', self.import_edizioni),
+            ('Iscrizioni (Anno e Corsi)', self.import_iscrizioni),
+            ('Lezioni effettuate', self.import_lezioni),
+        ]
 
-            # 3. Importa corsi
-            self.import_categorie()
-            self.import_gruppi()
-            self.import_corsi()
-            self.import_anni_accademici()
-            self.import_quadrimestri()
+        for section_name, task_func in tasks:
+            self.stdout.write(self.style.MIGRATE_LABEL(f'\n--- {section_name} ---'))
+            try:
+                task_func()
+            except Exception as e:
+                self.log(f"Errore critico nella sezione {section_name}: {e}", 'error')
 
-            # 4. Importa edizioni e iscrizioni
-            self.import_edizioni_corsi()
-            self.import_iscrizioni_anno()
-            self.import_iscrizioni_corso()
+        self.print_summary()
 
-            # 5. Importa lezioni e presenze
-            self.import_lezioni()
-
-        except Exception as e:
-            self.stdout.write(self.style.ERROR(f'\n✗ Errore critico durante l\'importazione: {str(e)}'))
-        
-        # Mostra statistiche
-        self.print_stats()
-    
-    def import_comuni(self):
-        """Importa comuni dal vecchio database"""
-        self.stdout.write('\n📍 Importazione Comuni...')
-        
+    def import_supporto(self):
         cursor = connections['old_database'].cursor()
         
-        # Nota: Nel vecchio DB i comuni sono referenziati ma potrebbero non avere una tabella dedicata
-        # Estraiamo i comuni unici dall'anagrafe
+        # Comuni
         cursor.execute("SELECT DISTINCT Paese FROM TAnagrafe WHERE Paese IS NOT NULL AND Paese != ''")
-        
         for row in cursor.fetchall():
-            paese_id = row[0]
-            # Cerca di ricavare il nome del comune (potrebbe essere solo un ID)
-            # Qui dovresti avere una tabella di lookup per i comuni, altrimenti usiamo l'ID
-            nome = f"Comune_{paese_id}"  # Placeholder
-            
             if not self.dry_run:
-                Comune.objects.get_or_create(
-                    id=paese_id,
-                    defaults={'nome': nome}
-                )
+                Comune.objects.get_or_create(id=row[0], defaults={'nome': f"Comune_{row[0]}"})
             self.stats['comuni'] += 1
-        
-        self.stdout.write(self.style.SUCCESS(f'  ✓ {self.stats["comuni"]} comuni importati'))
-    
-    def import_titoli_studio(self):
-        """Importa titoli di studio"""
-        self.stdout.write('\n📚 Importazione Titoli di Studio...')
-        
-        cursor = connections['old_database'].cursor()
+
+        # Titoli Studio
         cursor.execute("SELECT TitoloStudio FROM TTitoloStudio")
-        
         for row in cursor.fetchall():
             if row[0] and not self.dry_run:
                 TitoloStudio.objects.get_or_create(descrizione=row[0])
-            self.stats['titoli_studio'] += 1
-        
-        self.stdout.write(self.style.SUCCESS(f'  ✓ {self.stats["titoli_studio"]} titoli importati'))
-    
-    def import_professioni(self):
-        """Importa professioni"""
-        self.stdout.write('\n💼 Importazione Professioni...')
-        
-        cursor = connections['old_database'].cursor()
-        
-        # Professioni attuali
+                self.stats['titoli'] += 1
+
+        # Professioni
         cursor.execute("SELECT ProfAtt FROM TProfAtt")
         for row in cursor.fetchall():
             if row[0] and not self.dry_run:
                 ProfessioneAttuale.objects.get_or_create(descrizione=row[0])
-            self.stats['professioni_attuali'] += 1
-        
-        # Professioni passate
+                self.stats['prof_att'] += 1
+
         cursor.execute("SELECT ProfPass FROM TProfPass")
         for row in cursor.fetchall():
             if row[0] and not self.dry_run:
                 ProfessionePassata.objects.get_or_create(descrizione=row[0])
-            self.stats['professioni_passate'] += 1
-        
-        self.stdout.write(self.style.SUCCESS(
-            f'  ✓ {self.stats["professioni_attuali"]} prof. attuali, '
-            f'{self.stats["professioni_passate"]} prof. passate'
-        ))
-    
-    def import_docenti(self):
-        """Importa docenti"""
-        self.stdout.write('\n👨‍🏫 Importazione Docenti...')
-        
+                self.stats['prof_pass'] += 1
+
+    def import_staff(self):
         cursor = connections['old_database'].cursor()
-        cursor.execute("""
-            SELECT ID, Prefisso, Insegnante, Telefono, Cellulare, 
-                   Indirizzo, Paese, Note, Email
-            FROM TDocenti
-        """)
         
+        # Docenti
+        cursor.execute("SELECT ID, Prefisso, Insegnante, Telefono, Cellulare, Indirizzo, Paese, Email FROM TDocenti")
         for row in cursor.fetchall():
-            if not self.dry_run:
-                try:
-                    Docente.objects.get_or_create(
-                        id=row[0],
-                        defaults={
-                            'titolo': row[1] or '',
-                            'nome': row[2] or 'Sconosciuto',
-                            'telefono': row[3] or '',
-                            'cellulare': row[4] or '',
-                            'indirizzo': row[5] or '',
-                            'comune_id': row[6] if row[6] else None,
-                            'note': row[7] or '',
-                            'email': row[8] or '',
-                            'attivo': True
-                        }
-                    )
-                    self.stats['docenti'] += 1
-                except Exception as e:
-                    self.stats['errori'] += 1
-                    if self.verbose:
-                        self.stdout.write(self.style.ERROR(f'    Errore docente {row[0]}: {str(e)}'))
-            else:
+            try:
+                if not self.dry_run:
+                    Docente.objects.get_or_create(id=row[0], defaults={
+                        'titolo': row[1] or '', 'nome': row[2] or 'Sconosciuto',
+                        'telefono': row[3] or '', 'cellulare': row[4] or '',
+                        'indirizzo': row[5] or '', 'comune_id': row[6] if row[6] else None,
+                        'email': row[7] or '', 'attivo': True
+                    })
                 self.stats['docenti'] += 1
-        
-        self.stdout.write(self.style.SUCCESS(f'  ✓ {self.stats["docenti"]} docenti importati'))
-    
-    def import_autorita(self):
-        """Importa autorità"""
-        self.stdout.write('\n🏛️  Importazione Autorità...')
-        
-        cursor = connections['old_database'].cursor()
-        cursor.execute("""
-            SELECT ID, Prefisso, Autorita, Carica, Indirizzo, 
-                   Paese, Note, Attivo, Email
-            FROM TAutorita
-        """)
-        
+            except Exception as e:
+                self.stats['errori'] += 1
+                self.log(f"Errore docente {row[0]}: {e}", 'error')
+
+        # Autorità
+        cursor.execute("SELECT ID, Prefisso, Autorita, Carica, Email FROM TAutorita")
         for row in cursor.fetchall():
-            if not self.dry_run:
-                try:
-                    Autorita.objects.get_or_create(
-                        id=row[0],
-                        defaults={
-                            'titolo': row[1] or '',
-                            'nome': row[2] or 'Sconosciuto',
-                            'carica': row[3] or '',
-                            'indirizzo': row[4] or '',
-                            'comune_id': row[5] if row[5] else None,
-                            'note': row[6] or '',
-                            'attivo': bool(row[7]) if row[7] is not None else True,
-                            'email': row[8] or ''
-                        }
-                    )
-                    self.stats['autorita'] += 1
-                except Exception as e:
-                    self.stats['errori'] += 1
-                    if self.verbose:
-                        self.stdout.write(self.style.ERROR(f'    Errore autorità {row[0]}: {str(e)}'))
-            else:
+            try:
+                if not self.dry_run:
+                    Autorita.objects.get_or_create(id=row[0], defaults={
+                        'titolo': row[1] or '', 'nome': row[2] or 'Sconosciuto',
+                        'carica': row[3] or '', 'email': row[4] or '', 'attivo': True
+                    })
                 self.stats['autorita'] += 1
-        
-        self.stdout.write(self.style.SUCCESS(f'  ✓ {self.stats["autorita"]} autorità importate'))
-    
+            except Exception as e:
+                self.stats['errori'] += 1
+
     def import_iscritti(self):
-        """Importa iscritti"""
-        self.stdout.write('\n👥 Importazione Iscritti...')
-        
         cursor = connections['old_database'].cursor()
         cursor.execute("""
             SELECT Matr, `M/F`, Sig, Nominativo, Moglie, Indirizzo, Paese,
-                   Telefono, Cellulare, Luogo, Nascita, TitoloStudio, 
-                   ProfAtt, ProfPass, Pensionato, Posta, Email, Whatsapp, CF
+                   Telefono, Cellulare, Luogo, Nascita, CF, Pensionato
             FROM TAnagrafe
         """)
         
-        # Prima passata: crea tutti gli iscritti senza coniuge
-        iscritti_map = {}
-        for row in cursor.fetchall():
-            if not self.dry_run:
-                try:
-                    # Converti pensionato in boolean
-                    pensionato = False
-                    if row[14]:
-                        pensionato = str(row[14]).lower() in ['si', 'sì', 'yes', '1', 'true']
-                    
-                    iscritto, created = Iscritto.objects.get_or_create(
-                        matricola=row[0],
-                        defaults={
-                            'sesso': 'M' if row[1] == 'M' else 'F',
-                            'titolo': row[2] or '',
-                            'nominativo': row[3] or 'Sconosciuto',
-                            'indirizzo': row[5] or '',
-                            'comune_id': row[6] if row[6] else None,
-                            'telefono': row[7] or '',
-                            'cellulare': row[8] or '',
-                            'luogo_nascita': row[9] or '',
-                            'data_nascita': row[10] if row[10] else None,
-                            'email': row[16] or '',
-                            'ha_whatsapp': bool(row[17]) if row[17] else False,
-                            'codice_fiscale': row[18] or None,
-                            'e_pensionato': pensionato,
-                            'riceve_posta': bool(row[15]) if row[15] is not None else True
-                        }
-                    )
-                    
-                    iscritti_map[row[0]] = (iscritto, row[4])  # Salva matricola moglie
-                    if created:
-                        self.stats['iscritti'] += 1
-                    
-                except Exception as e:
-                    self.stats['errori'] += 1
-                    if self.verbose:
-                        self.stdout.write(self.style.ERROR(f'    Errore iscritto {row[0]}: {str(e)}'))
-            else:
+        iscritti_rows = cursor.fetchall()
+        for row in iscritti_rows:
+            try:
+                if not self.dry_run:
+                    Iscritto.objects.get_or_create(matricola=row[0], defaults={
+                        'sesso': 'M' if row[1] == 'M' else 'F', 'titolo': row[2] or '',
+                        'nominativo': row[3] or 'Sconosciuto', 'indirizzo': row[5] or '',
+                        'comune_id': row[6] if row[6] else None, 'telefono': row[7] or '',
+                        'cellulare': row[8] or '', 'luogo_nascita': row[9] or '',
+                        'data_nascita': row[10] if row[10] else None, 'codice_fiscale': row[11] or None,
+                        'e_pensionato': str(row[12]).lower() in ['si', 'sì', '1', 'true']
+                    })
                 self.stats['iscritti'] += 1
-        
-        # Seconda passata: collega i coniugi
+            except Exception as e:
+                self.stats['errori'] += 1
+                self.log(f"Errore iscritto {row[0]}: {e}", 'error')
+
+        # Seconda passata per coniugi (Logica da collega_coniugi.py)
         if not self.dry_run:
-            for matricola, (iscritto, moglie_id) in iscritti_map.items():
-                if moglie_id and moglie_id in iscritti_map:
-                    iscritto.coniuge = iscritti_map[moglie_id][0]
-                    iscritto.save()
-        
-        self.stdout.write(self.style.SUCCESS(f'  ✓ {self.stats["iscritti"]} iscritti importati'))
-    
-    def import_categorie(self):
-        """Importa categorie corsi"""
-        self.stdout.write('\n📂 Importazione Categorie Corsi...')
-        
+            self.log("Collegamento coniugi...", 'important')
+            for row in iscritti_rows:
+                if row[4]: # Moglie (ID)
+                    try:
+                        marito = Iscritto.objects.get(matricola=row[0])
+                        moglie = Iscritto.objects.get(matricola=row[4])
+                        marito.coniuge = moglie
+                        marito.save()
+                    except:
+                        pass
+
+    def import_catalogo(self):
         cursor = connections['old_database'].cursor()
+        
+        # Categorie
         cursor.execute("SELECT IDCAT, Categoria FROM TCategorie")
-        
-        for row in cursor.fetchall():
-            if row[1] and not self.dry_run:
-                CategoriaCorso.objects.get_or_create(
-                    id=row[0],
-                    defaults={'nome': row[1], 'ordine': row[0]}
-                )
-            self.stats['categorie'] += 1
-        
-        self.stdout.write(self.style.SUCCESS(f'  ✓ {self.stats["categorie"]} categorie importate'))
-    
-    def import_gruppi(self):
-        """Importa gruppi corsi"""
-        self.stdout.write('\n📦 Importazione Gruppi Corsi...')
-        
-        cursor = connections['old_database'].cursor()
-        cursor.execute("SELECT ID, Gruppo FROM TGruppi")
-        
-        for row in cursor.fetchall():
-            if row[1] and not self.dry_run:
-                GruppoCorso.objects.get_or_create(
-                    id=row[0],
-                    defaults={'nome': row[1]}
-                )
-            self.stats['gruppi'] += 1
-        
-        self.stdout.write(self.style.SUCCESS(f'  ✓ {self.stats["gruppi"]} gruppi importati'))
-    
-    def import_corsi(self):
-        """Importa corsi"""
-        self.stdout.write('\n📖 Importazione Corsi...')
-        
-        cursor = connections['old_database'].cursor()
-        cursor.execute("""
-            SELECT Codice, Corsi, Dettaglio, CAT, GRUPPO, Visibile
-            FROM TCorsi
-        """)
-        
         for row in cursor.fetchall():
             if not self.dry_run:
-                try:
-                    Corso.objects.get_or_create(
-                        codice=row[0],
-                        defaults={
-                            'nome': row[1] or 'Corso senza nome',
-                            'descrizione': row[2] or '',
-                            'categoria_id': row[3] if row[3] else None,
-                            'gruppo_id': row[4] if row[4] else None,
-                            'visibile': bool(row[5]) if row[5] is not None else True
-                        }
-                    )
-                    self.stats['corsi'] += 1
-                except Exception as e:
-                    self.stats['errori'] += 1
-                    if self.verbose:
-                        self.stdout.write(self.style.ERROR(f'    Errore corso {row[0]}: {str(e)}'))
-            else:
+                CategoriaCorso.objects.get_or_create(id=row[0], defaults={'nome': row[1], 'ordine': row[0]})
+            self.stats['categorie'] += 1
+
+        # Gruppi
+        cursor.execute("SELECT ID, Gruppo FROM TGruppi")
+        for row in cursor.fetchall():
+            if not self.dry_run:
+                GruppoCorso.objects.get_or_create(id=row[0], defaults={'nome': row[1]})
+            self.stats['gruppi'] += 1
+
+        # Corsi (Master)
+        cursor.execute("SELECT Codice, Corsi, Dettaglio, CAT, GRUPPO FROM TCorsi")
+        for row in cursor.fetchall():
+            try:
+                if not self.dry_run:
+                    Corso.objects.get_or_create(codice=row[0], defaults={
+                        'nome': row[1] or f"Corso {row[0]}", 'descrizione': row[2] or '',
+                        'categoria_id': row[3] if row[3] else None, 'gruppo_id': row[4] if row[4] else None
+                    })
                 self.stats['corsi'] += 1
-        
-        self.stdout.write(self.style.SUCCESS(f'  ✓ {self.stats["corsi"]} corsi importati'))
-    
-    def import_anni_accademici(self):
-        """Importa anni accademici"""
-        self.stdout.write('\n📅 Importazione Anni Accademici...')
-        
+            except Exception as e:
+                self.stats['errori'] += 1
+
+    def import_periodi(self):
         cursor = connections['old_database'].cursor()
+        
+        # Anni Accademici (FIX FORMATO: 2023/2024 -> 2023-2024)
         cursor.execute("SELECT AnnoAccademico FROM TAnnoAccademico ORDER BY progr DESC")
-        
         for i, row in enumerate(cursor.fetchall()):
-            if row[0] and not self.dry_run:
-                # L'anno più recente sarà attivo
-                anno_str = row[0]
-                anni = anno_str.split('-')
-                
-                try:
-                    anno_inizio = int(anni[0])
-                    data_inizio = datetime(anno_inizio, 10, 1).date()  # 1 ottobre
-                    data_fine = datetime(anno_inizio + 1, 4, 30).date()  # 30 aprile
-                    
-                    AnnoAccademico.objects.get_or_create(
-                        anno=anno_str,
-                        defaults={
-                            'data_inizio': data_inizio,
-                            'data_fine': data_fine,
-                            'attivo': i == 0  # Solo il primo è attivo
-                        }
-                    )
-                    self.stats['anni'] += 1
-                except Exception as e:
-                    self.stats['errori'] += 1
-                    if self.verbose:
-                        self.stdout.write(self.style.ERROR(f'    Errore anno {anno_str}: {str(e)}'))
-            else:
+            if not row[0]: continue
+            anno_fix = str(row[0]).replace('/', '-')
+            try:
+                if not self.dry_run:
+                    anno_inizio = int(anno_fix.split('-')[0])
+                    AnnoAccademico.objects.get_or_create(anno=anno_fix, defaults={
+                        'data_inizio': datetime(anno_inizio, 10, 1).date(),
+                        'data_fine': datetime(anno_inizio + 1, 5, 31).date(),
+                        'attivo': i == 0
+                    })
                 self.stats['anni'] += 1
-        
-        self.stdout.write(self.style.SUCCESS(f'  ✓ {self.stats["anni"]} anni accademici importati'))
-    
-    def import_quadrimestri(self):
-        """Crea i quadrimestri se non esistono"""
-        self.stdout.write('\n📆 Creazione Quadrimestri...')
-        
+            except Exception as e:
+                self.log(f"Errore anno {row[0]}: {e}", 'error')
+
+        # Quadrimestri
         if not self.dry_run:
             Quadrimestre.objects.get_or_create(numero=1)
             Quadrimestre.objects.get_or_create(numero=2)
-        
-        self.stdout.write(self.style.SUCCESS('  ✓ Quadrimestri creati'))
-    
-    def import_edizioni_corsi(self):
-        """Importa edizioni corsi annuali"""
-        self.stdout.write('\n📚 Importazione Edizioni Corsi...')
-        
+
+    def import_edizioni(self):
         cursor = connections['old_database'].cursor()
         cursor.execute("""
             SELECT ID, Anno, Codice, Descrizione, Quadrimestre, Insegnante,
-                   Assistente, Vice, Giorni, Dalle, Alle, Note
+                   Assistente, Vice, Giorni, Dalle, Alle
             FROM TCorsiAnnualiDocenti
         """)
-        
         for row in cursor.fetchall():
-            if not self.dry_run:
-                try:
-                    # Validazioni
-                    anno = AnnoAccademico.objects.filter(anno=row[1]).first()
-                    corso = Corso.objects.filter(codice=row[2]).first()
-                    docente = Docente.objects.filter(id=row[5]).first()
-                    quad = Quadrimestre.objects.filter(numero=row[4]).first()
-                    
-                    if not all([anno, corso, docente, quad]):
-                        self.stats['errori'] += 1
-                        continue
-                    
-                    # Crea edizione
-                    EdizioneCorso.objects.get_or_create(
-                        id=row[0],
+            try:
+                anno_fix = str(row[1]).replace('/', '-')
+                anno = AnnoAccademico.objects.filter(anno=anno_fix).first()
+                corso = Corso.objects.filter(codice=row[2]).first()
+                docente = Docente.objects.filter(id=row[5]).first()
+                quad = Quadrimestre.objects.filter(numero=row[4]).first()
+
+                if anno and corso and docente and quad and not self.dry_run:
+                    EdizioneCorso.objects.get_or_create(id=row[0], defaults={
+                        'anno_accademico': anno, 'corso': corso, 'quadrimestre': quad,
+                        'docente': docente, 'descrizione_custom': row[3] or '',
+                        'giorni_settimana': row[8] or '', 'ora_inizio': row[9] or '09:00',
+                        'ora_fine': row[10] or '11:00'
+                    })
+                    self.stats['edizioni'] += 1
+                elif not self.dry_run:
+                    self.stats['errori'] += 1
+            except Exception as e:
+                self.stats['errori'] += 1
+
+    def import_iscrizioni(self):
+        cursor = connections['old_database'].cursor()
+        
+        # Iscrizioni Anno
+        cursor.execute("SELECT AnnoAccademico, Matricola, Ricevuta, Data FROM TIscrizioneAnnoAccademico")
+        for row in cursor.fetchall():
+            try:
+                anno_fix = str(row[0]).replace('/', '-')
+                anno = AnnoAccademico.objects.filter(anno=anno_fix).first()
+                iscritto = Iscritto.objects.filter(matricola=row[1]).first()
+                if anno and iscritto and not self.dry_run:
+                    IscrizioneAnnoAccademico.objects.get_or_create(
+                        anno_accademico=anno, iscritto=iscritto,
+                        defaults={'numero_ricevuta': row[2] or 0, 'data_iscrizione': row[3] or anno.data_inizio}
+                    )
+                    self.stats['isc_anno'] += 1
+            except:
+                self.stats['errori'] += 1
+
+        # Iscrizioni Corsi
+        cursor.execute("SELECT AnnoAccademico, Corso, Matricola, Ricevuta, Data FROM TFrequenzaCorsi")
+        for row in cursor.fetchall():
+            try:
+                anno_fix = str(row[0]).replace('/', '-')
+                anno = AnnoAccademico.objects.filter(anno=anno_fix).first()
+                iscritto = Iscritto.objects.filter(matricola=row[2]).first()
+                edizione = EdizioneCorso.objects.filter(anno_accademico=anno, corso__codice=row[1]).first()
+                if anno and iscritto and edizione and not self.dry_run:
+                    IscrizioneCorso.objects.get_or_create(
+                        anno_accademico=anno, iscritto=iscritto, edizione_corso=edizione,
+                        defaults={'numero_ricevuta': row[3] or 0, 'data_iscrizione': row[4] or anno.data_inizio}
+                    )
+                    self.stats['isc_corso'] += 1
+            except:
+                self.stats['errori'] += 1
+
+    def import_lezioni(self):
+        cursor = connections['old_database'].cursor()
+        cursor.execute("SELECT ID_corso_annuale, data, descrizione, insegnante, presenze, ore FROM TPresenzeCorsisti")
+        for row in cursor.fetchall():
+            try:
+                edizione = EdizioneCorso.objects.filter(id=row[0]).first()
+                if edizione and row[1] and not self.dry_run:
+                    Lezione.objects.get_or_create(
+                        edizione_corso=edizione, data_lezione=row[1],
                         defaults={
-                            'anno_accademico': anno,
-                            'corso': corso,
-                            'quadrimestre': quad,
-                            'descrizione_custom': row[3] or '',
-                            'docente': docente,
-                            'assistente_id': row[6] if row[6] else None,
-                            'vice_assistente_id': row[7] if row[7] else None,
-                            'giorni_settimana': row[8] or '',
-                            'ora_inizio': row[9] if row[9] else '09:00',
-                            'ora_fine': row[10] if row[10] else '11:00',
-                            'note': row[11] or ''
+                            'descrizione': row[2] or '',
+                            'docente_id': row[3] if row[3] else edizione.docente_id,
+                            'numero_presenti': row[4] or 0,
+                            'ore_lezione': float(row[5]) if row[5] else 2.0
                         }
                     )
-                    self.stats['edizioni'] += 1
-                    
-                except Exception as e:
-                    self.stats['errori'] += 1
-                    if self.verbose:
-                        self.stdout.write(self.style.ERROR(f'    Errore edizione {row[0]}: {str(e)}'))
-            else:
-                self.stats['edizioni'] += 1
-        
-        self.stdout.write(self.style.SUCCESS(f'  ✓ {self.stats["edizioni"]} edizioni importate'))
-    
-    def import_iscrizioni_anno(self):
-        """Importa iscrizioni anno accademico"""
-        self.stdout.write('\n✍️  Importazione Iscrizioni Anno...')
-        
-        cursor = connections['old_database'].cursor()
-        cursor.execute("""
-            SELECT AnnoAccademico, Matricola, Ricevuta, Data
-            FROM TIscrizioneAnnoAccademico
-        """)
-        
-        for row in cursor.fetchall():
-            if not self.dry_run:
-                try:
-                    anno = AnnoAccademico.objects.filter(anno=row[0]).first()
-                    iscritto = Iscritto.objects.filter(matricola=row[1]).first()
-                    
-                    if anno and iscritto:
-                        IscrizioneAnnoAccademico.objects.get_or_create(
-                            anno_accademico=anno,
-                            iscritto=iscritto,
-                            defaults={
-                                'numero_ricevuta': row[2] or 0,
-                                'data_iscrizione': row[3] if row[3] else anno.data_inizio
-                            }
-                        )
-                        self.stats['iscrizioni_anno'] += 1
-                except Exception as e:
-                    self.stats['errori'] += 1
-                    if self.verbose:
-                        self.stdout.write(self.style.ERROR(f'    Errore iscrizione anno: {str(e)}'))
-            else:
-                self.stats['iscrizioni_anno'] += 1
-        
-        self.stdout.write(self.style.SUCCESS(f'  ✓ {self.stats["iscrizioni_anno"]} iscrizioni anno importate'))
-    
-    def import_iscrizioni_corso(self):
-        """Importa iscrizioni corsi"""
-        self.stdout.write('\n📝 Importazione Iscrizioni Corsi...')
-        
-        cursor = connections['old_database'].cursor()
-        cursor.execute("""
-            SELECT AnnoAccademico, Corso, Matricola, Ricevuta, Data
-            FROM TFrequenzaCorsi
-        """)
-        
-        for row in cursor.fetchall():
-            if not self.dry_run:
-                try:
-                    anno = AnnoAccademico.objects.filter(anno=row[0]).first()
-                    iscritto = Iscritto.objects.filter(matricola=row[2]).first()
-                    # Trova l'edizione del corso (potrebbero essercene più di una)
-                    edizione = EdizioneCorso.objects.filter(
-                        anno_accademico=anno,
-                        corso__codice=row[1]
-                    ).first()
-                    
-                    if all([anno, iscritto, edizione]):
-                        IscrizioneCorso.objects.get_or_create(
-                            anno_accademico=anno,
-                            edizione_corso=edizione,
-                            iscritto=iscritto,
-                            defaults={
-                                'numero_ricevuta': row[3],
-                                'data_iscrizione': row[4] if row[4] else anno.data_inizio
-                            }
-                        )
-                        self.stats['iscrizioni_corso'] += 1
-                except Exception as e:
-                    self.stats['errori'] += 1
-                    if self.verbose:
-                        self.stdout.write(self.style.ERROR(f'    Errore iscrizione corso: {str(e)}'))
-            else:
-                self.stats['iscrizioni_corso'] += 1
-        
-        self.stdout.write(self.style.SUCCESS(f'  ✓ {self.stats["iscrizioni_corso"]} iscrizioni corso importate'))
-    
-    def import_lezioni(self):
-        """Importa lezioni"""
-        self.stdout.write('\n📓 Importazione Lezioni...')
-        
-        cursor = connections['old_database'].cursor()
-        cursor.execute("""
-            SELECT ID_corso_annuale, data, corso, descrizione, 
-                   insegnante, presenze, ore, annoacc
-            FROM TPresenzeCorsisti
-        """)
-        
-        for row in cursor.fetchall():
-            if not self.dry_run:
-                try:
-                    # Trova l'edizione del corso
-                    edizione = EdizioneCorso.objects.filter(id=row[0]).first()
-                    docente = Docente.objects.filter(id=row[4]).first()
-                    
-                    if edizione and row[1]:
-                        Lezione.objects.get_or_create(
-                            edizione_corso=edizione,
-                            data_lezione=row[1],
-                            defaults={
-                                'descrizione': row[3] or '',
-                                'docente': docente or edizione.docente,
-                                'numero_presenti': row[5] or 0,
-                                'ore_lezione': float(row[6]) if row[6] else 2.0
-                            }
-                        )
-                        self.stats['lezioni'] += 1
-                except Exception as e:
-                    self.stats['errori'] += 1
-                    if self.verbose:
-                        self.stdout.write(self.style.ERROR(f'    Errore lezione: {str(e)}'))
-            else:
-                self.stats['lezioni'] += 1
-        
-        self.stdout.write(self.style.SUCCESS(f'  ✓ {self.stats["lezioni"]} lezioni importate'))
-    
-    def print_stats(self):
-        """Stampa statistiche finali"""
+                    self.stats['lezioni'] += 1
+            except:
+                self.stats['errori'] += 1
+
+    def print_summary(self):
         self.stdout.write('\n' + '='*70)
-        self.stdout.write(self.style.SUCCESS('RIEPILOGO IMPORTAZIONE'))
+        self.stdout.write(self.style.SUCCESS('  RIEPILOGO IMPORTAZIONE FINALE'))
         self.stdout.write('='*70)
-        
-        self.stdout.write(f'\n📊 TABELLE DI SUPPORTO:')
-        self.stdout.write(f'  • Comuni: {self.stats["comuni"]}')
-        self.stdout.write(f'  • Titoli di Studio: {self.stats["titoli_studio"]}')
-        self.stdout.write(f'  • Professioni Attuali: {self.stats["professioni_attuali"]}')
-        self.stdout.write(f'  • Professioni Passate: {self.stats["professioni_passate"]}')
-        
-        self.stdout.write(f'\n👥 ANAGRAFICHE:')
-        self.stdout.write(f'  • Iscritti: {self.stats["iscritti"]}')
-        self.stdout.write(f'  • Docenti: {self.stats["docenti"]}')
-        self.stdout.write(f'  • Autorità: {self.stats["autorita"]}')
-        
-        self.stdout.write(f'\n📚 CORSI:')
-        self.stdout.write(f'  • Categorie: {self.stats["categorie"]}')
-        self.stdout.write(f'  • Gruppi: {self.stats["gruppi"]}')
-        self.stdout.write(f'  • Corsi: {self.stats["corsi"]}')
-        self.stdout.write(f'  • Anni Accademici: {self.stats["anni"]}')
-        self.stdout.write(f'  • Edizioni Corsi: {self.stats["edizioni"]}')
-        
-        self.stdout.write(f'\n✍️  ISCRIZIONI E LEZIONI:')
-        self.stdout.write(f'  • Iscrizioni Anno: {self.stats["iscrizioni_anno"]}')
-        self.stdout.write(f'  • Iscrizioni Corso: {self.stats["iscrizioni_corso"]}')
-        self.stdout.write(f'  • Lezioni: {self.stats["lezioni"]}')
+        self.stdout.write(f"  • Comuni: {self.stats['comuni']} | Titoli: {self.stats['titoli']}")
+        self.stdout.write(f"  • Professioni: {self.stats['prof_att']} attuali, {self.stats['prof_pass']} passate")
+        self.stdout.write(f"  • Staff: {self.stats['docenti']} docenti, {self.stats['autorita']} autorità")
+        self.stdout.write(f"  • Iscritti: {self.stats['iscritti']}")
+        self.stdout.write(f"  • Catalogo: {self.stats['categorie']} cat, {self.stats['gruppi']} gruppi, {self.stats['corsi']} corsi")
+        self.stdout.write(f"  • Periodi: {self.stats['anni']} anni accademici")
+        self.stdout.write(f"  • Didattica: {self.stats['edizioni']} edizioni, {self.stats['lezioni']} lezioni")
+        self.stdout.write(f"  • Iscrizioni: {self.stats['isc_anno']} annuali, {self.stats['isc_corso']} ai corsi")
         
         if self.stats['errori'] > 0:
-            self.stdout.write(f'\n⚠️  ERRORI: {self.stats["errori"]}')
-            self.stdout.write(self.style.WARNING('   Alcuni record non sono stati importati'))
+            self.stdout.write(self.style.WARNING(f"\n  ⚠️ Record non importati per errori: {self.stats['errori']}"))
         
-        self.stdout.write('\n' + '='*70)
-        
-        if not self.dry_run:
-            self.stdout.write(self.style.SUCCESS('\n✓ Importazione completata con successo!\n'))
-        else:
-            self.stdout.write(self.style.WARNING('\n✓ Simulazione completata. Nessun dato salvato.\n'))
+        self.stdout.write('\n' + '='*70 + '\n')
