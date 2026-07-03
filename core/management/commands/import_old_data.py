@@ -96,27 +96,27 @@ class Command(BaseCommand):
         cursor = connections['old_database'].cursor()
         
         # Comuni
-        cursor.execute("SELECT DISTINCT Paese FROM TAnagrafe WHERE Paese IS NOT NULL AND Paese != ''")
+        cursor.execute("SELECT DISTINCT Paese FROM `TAnagrafe` WHERE Paese IS NOT NULL AND Paese != ''")
         for row in cursor.fetchall():
             if not self.dry_run:
                 Comune.objects.get_or_create(id=row[0], defaults={'nome': f"Comune_{row[0]}"})
             self.stats['comuni'] += 1
 
         # Titoli Studio
-        cursor.execute("SELECT TitoloStudio FROM TTitoloStudio")
+        cursor.execute("SELECT TitoloStudio FROM `TTitoloStudio`")
         for row in cursor.fetchall():
             if row[0] and not self.dry_run:
                 TitoloStudio.objects.get_or_create(descrizione=row[0])
                 self.stats['titoli'] += 1
 
         # Professioni
-        cursor.execute("SELECT ProfAtt FROM TProfAtt")
+        cursor.execute("SELECT ProfAtt FROM `TProfAtt`")
         for row in cursor.fetchall():
             if row[0] and not self.dry_run:
                 ProfessioneAttuale.objects.get_or_create(descrizione=row[0])
                 self.stats['prof_att'] += 1
 
-        cursor.execute("SELECT ProfPass FROM TProfPass")
+        cursor.execute("SELECT ProfPass FROM `TProfPass`")
         for row in cursor.fetchall():
             if row[0] and not self.dry_run:
                 ProfessionePassata.objects.get_or_create(descrizione=row[0])
@@ -126,7 +126,7 @@ class Command(BaseCommand):
         cursor = connections['old_database'].cursor()
         
         # Docenti
-        cursor.execute("SELECT ID, Prefisso, Insegnante, Telefono, Cellulare, Indirizzo, Paese, Email FROM TDocenti")
+        cursor.execute("SELECT ID, Prefisso, Insegnante, Telefono, Cellulare, Indirizzo, Paese, Email FROM `TDocenti`")
         for row in cursor.fetchall():
             try:
                 if not self.dry_run:
@@ -142,7 +142,7 @@ class Command(BaseCommand):
                 self.log(f"Errore docente {row[0]}: {e}", 'error')
 
         # Autorità
-        cursor.execute("SELECT ID, Prefisso, Autorita, Carica, Email FROM TAutorita")
+        cursor.execute("SELECT ID, Prefisso, Autorita, Carica, Email FROM `TAutorita`")
         for row in cursor.fetchall():
             try:
                 if not self.dry_run:
@@ -159,7 +159,7 @@ class Command(BaseCommand):
         cursor.execute("""
             SELECT Matr, `M/F`, Sig, Nominativo, Moglie, Indirizzo, Paese,
                    Telefono, Cellulare, Luogo, Nascita, CF, Pensionato
-            FROM TAnagrafe
+            FROM `TAnagrafe`
         """)
         
         iscritti_rows = cursor.fetchall()
@@ -196,21 +196,21 @@ class Command(BaseCommand):
         cursor = connections['old_database'].cursor()
         
         # Categorie
-        cursor.execute("SELECT IDCAT, Categoria FROM TCategorie")
+        cursor.execute("SELECT IDCAT, Categoria FROM `TCategorie`")
         for row in cursor.fetchall():
             if not self.dry_run:
                 CategoriaCorso.objects.get_or_create(id=row[0], defaults={'nome': row[1], 'ordine': row[0]})
             self.stats['categorie'] += 1
 
         # Gruppi
-        cursor.execute("SELECT ID, Gruppo FROM TGruppi")
+        cursor.execute("SELECT ID, Gruppo FROM `TGruppi`")
         for row in cursor.fetchall():
             if not self.dry_run:
                 GruppoCorso.objects.get_or_create(id=row[0], defaults={'nome': row[1]})
             self.stats['gruppi'] += 1
 
         # Corsi (Master)
-        cursor.execute("SELECT Codice, Corsi, Dettaglio, CAT, GRUPPO FROM TCorsi")
+        cursor.execute("SELECT Codice, Corsi, Dettaglio, CAT, GRUPPO FROM `TCorsi`")
         for row in cursor.fetchall():
             try:
                 if not self.dry_run:
@@ -226,7 +226,7 @@ class Command(BaseCommand):
         cursor = connections['old_database'].cursor()
         
         # Anni Accademici (FIX FORMATO: 2023/2024 -> 2023-2024)
-        cursor.execute("SELECT AnnoAccademico FROM TAnnoAccademico ORDER BY progr DESC")
+        cursor.execute("SELECT AnnoAccademico FROM `TAnnoAccademico` ORDER BY progr DESC")
         for i, row in enumerate(cursor.fetchall()):
             if not row[0]: continue
             anno_fix = str(row[0]).replace('/', '-')
@@ -252,7 +252,7 @@ class Command(BaseCommand):
         cursor.execute("""
             SELECT ID, Anno, Codice, Descrizione, Quadrimestre, Insegnante,
                    Assistente, Vice, Giorni, Dalle, Alle
-            FROM TCorsiAnnualiDocenti
+            FROM `TCorsiAnnualiDocenti`
         """)
         for row in cursor.fetchall():
             try:
@@ -279,7 +279,7 @@ class Command(BaseCommand):
         cursor = connections['old_database'].cursor()
         
         # Iscrizioni Anno
-        cursor.execute("SELECT AnnoAccademico, Matricola, Ricevuta, Data FROM TIscrizioneAnnoAccademico")
+        cursor.execute("SELECT AnnoAccademico, Matricola, Ricevuta, Data FROM `TIscrizioneAnnoAccademico`")
         for row in cursor.fetchall():
             try:
                 anno_fix = str(row[0]).replace('/', '-')
@@ -295,7 +295,7 @@ class Command(BaseCommand):
                 self.stats['errori'] += 1
 
         # Iscrizioni Corsi
-        cursor.execute("SELECT AnnoAccademico, Corso, Matricola, Ricevuta, Data FROM TFrequenzaCorsi")
+        cursor.execute("SELECT AnnoAccademico, Corso, Matricola, Ricevuta, Data FROM `TFrequenzaCorsi`")
         for row in cursor.fetchall():
             try:
                 anno_fix = str(row[0]).replace('/', '-')
@@ -313,7 +313,7 @@ class Command(BaseCommand):
 
     def import_lezioni(self):
         cursor = connections['old_database'].cursor()
-        cursor.execute("SELECT ID_corso_annuale, data, descrizione, insegnante, presenze, ore FROM TPresenzeCorsisti")
+        cursor.execute("SELECT ID_corso_annuale, data, descrizione, insegnante, presenze, ore FROM `TPresenzeCorsisti`")
         for row in cursor.fetchall():
             try:
                 edizione = EdizioneCorso.objects.filter(id=row[0]).first()
