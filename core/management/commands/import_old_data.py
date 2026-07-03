@@ -73,9 +73,10 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS('='*70 + '\n'))
         
         if self.dry_run:
-            self.stdout.write(self.style.WARNING('MODALITÀ DRY-RUN: I dati non verranno salvati\n'))
+            self.stdout.write(self.style.WARNING('MODALITÀ DRY-RUN: I dati verranno simulati (uso di get_or_create)\n'))
         
         try:
+            # Rimosso transaction.atomic() globale per evitare TransactionManagementError in caso di errori singoli
             # 1. Importa tabelle di supporto
             self.import_comuni()
             self.import_titoli_studio()
@@ -101,15 +102,8 @@ class Command(BaseCommand):
             # 5. Importa lezioni e presenze
             self.import_lezioni()
 
-            if self.dry_run:
-                self.stdout.write(self.style.WARNING('\n✓ Simulazione completata.'))
-        
         except Exception as e:
-            if self.dry_run:
-                self.stdout.write(self.style.WARNING('\n✓ Dry-run completato con successo'))
-            else:
-                self.stdout.write(self.style.ERROR(f'\n✗ Errore durante l\'importazione: {str(e)}'))
-                raise
+            self.stdout.write(self.style.ERROR(f'\n✗ Errore critico durante l\'importazione: {str(e)}'))
         
         # Mostra statistiche
         self.print_stats()
@@ -192,17 +186,19 @@ class Command(BaseCommand):
         for row in cursor.fetchall():
             if not self.dry_run:
                 try:
-                    Docente.objects.create(
+                    Docente.objects.get_or_create(
                         id=row[0],
-                        titolo=row[1] or '',
-                        nome=row[2] or 'Sconosciuto',
-                        telefono=row[3] or '',
-                        cellulare=row[4] or '',
-                        indirizzo=row[5] or '',
-                        comune_id=row[6] if row[6] else None,
-                        note=row[7] or '',
-                        email=row[8] or '',
-                        attivo=True
+                        defaults={
+                            'titolo': row[1] or '',
+                            'nome': row[2] or 'Sconosciuto',
+                            'telefono': row[3] or '',
+                            'cellulare': row[4] or '',
+                            'indirizzo': row[5] or '',
+                            'comune_id': row[6] if row[6] else None,
+                            'note': row[7] or '',
+                            'email': row[8] or '',
+                            'attivo': True
+                        }
                     )
                     self.stats['docenti'] += 1
                 except Exception as e:
@@ -228,16 +224,18 @@ class Command(BaseCommand):
         for row in cursor.fetchall():
             if not self.dry_run:
                 try:
-                    Autorita.objects.create(
+                    Autorita.objects.get_or_create(
                         id=row[0],
-                        titolo=row[1] or '',
-                        nome=row[2] or 'Sconosciuto',
-                        carica=row[3] or '',
-                        indirizzo=row[4] or '',
-                        comune_id=row[5] if row[5] else None,
-                        note=row[6] or '',
-                        attivo=bool(row[7]) if row[7] is not None else True,
-                        email=row[8] or ''
+                        defaults={
+                            'titolo': row[1] or '',
+                            'nome': row[2] or 'Sconosciuto',
+                            'carica': row[3] or '',
+                            'indirizzo': row[4] or '',
+                            'comune_id': row[5] if row[5] else None,
+                            'note': row[6] or '',
+                            'attivo': bool(row[7]) if row[7] is not None else True,
+                            'email': row[8] or ''
+                        }
                     )
                     self.stats['autorita'] += 1
                 except Exception as e:
@@ -271,26 +269,29 @@ class Command(BaseCommand):
                     if row[14]:
                         pensionato = str(row[14]).lower() in ['si', 'sì', 'yes', '1', 'true']
                     
-                    iscritto = Iscritto.objects.create(
+                    iscritto, created = Iscritto.objects.get_or_create(
                         matricola=row[0],
-                        sesso='M' if row[1] == 'M' else 'F',
-                        titolo=row[2] or '',
-                        nominativo=row[3] or 'Sconosciuto',
-                        indirizzo=row[5] or '',
-                        comune_id=row[6] if row[6] else None,
-                        telefono=row[7] or '',
-                        cellulare=row[8] or '',
-                        luogo_nascita=row[9] or '',
-                        data_nascita=row[10] if row[10] else None,
-                        email=row[16] or '',
-                        ha_whatsapp=bool(row[17]) if row[17] else False,
-                        codice_fiscale=row[18] or None,
-                        e_pensionato=pensionato,
-                        riceve_posta=bool(row[15]) if row[15] is not None else True
+                        defaults={
+                            'sesso': 'M' if row[1] == 'M' else 'F',
+                            'titolo': row[2] or '',
+                            'nominativo': row[3] or 'Sconosciuto',
+                            'indirizzo': row[5] or '',
+                            'comune_id': row[6] if row[6] else None,
+                            'telefono': row[7] or '',
+                            'cellulare': row[8] or '',
+                            'luogo_nascita': row[9] or '',
+                            'data_nascita': row[10] if row[10] else None,
+                            'email': row[16] or '',
+                            'ha_whatsapp': bool(row[17]) if row[17] else False,
+                            'codice_fiscale': row[18] or None,
+                            'e_pensionato': pensionato,
+                            'riceve_posta': bool(row[15]) if row[15] is not None else True
+                        }
                     )
                     
                     iscritti_map[row[0]] = (iscritto, row[4])  # Salva matricola moglie
-                    self.stats['iscritti'] += 1
+                    if created:
+                        self.stats['iscritti'] += 1
                     
                 except Exception as e:
                     self.stats['errori'] += 1
@@ -355,13 +356,15 @@ class Command(BaseCommand):
         for row in cursor.fetchall():
             if not self.dry_run:
                 try:
-                    Corso.objects.create(
+                    Corso.objects.get_or_create(
                         codice=row[0],
-                        nome=row[1] or 'Corso senza nome',
-                        descrizione=row[2] or '',
-                        categoria_id=row[3] if row[3] else None,
-                        gruppo_id=row[4] if row[4] else None,
-                        visibile=bool(row[5]) if row[5] is not None else True
+                        defaults={
+                            'nome': row[1] or 'Corso senza nome',
+                            'descrizione': row[2] or '',
+                            'categoria_id': row[3] if row[3] else None,
+                            'gruppo_id': row[4] if row[4] else None,
+                            'visibile': bool(row[5]) if row[5] is not None else True
+                        }
                     )
                     self.stats['corsi'] += 1
                 except Exception as e:
@@ -444,18 +447,21 @@ class Command(BaseCommand):
                         continue
                     
                     # Crea edizione
-                    edizione = EdizioneCorso.objects.create(
-                        anno_accademico=anno,
-                        corso=corso,
-                        quadrimestre=quad,
-                        descrizione_custom=row[3] or '',
-                        docente=docente,
-                        assistente_id=row[6] if row[6] else None,
-                        vice_assistente_id=row[7] if row[7] else None,
-                        giorni_settimana=row[8] or '',
-                        ora_inizio=row[9] if row[9] else '09:00',
-                        ora_fine=row[10] if row[10] else '11:00',
-                        note=row[11] or ''
+                    EdizioneCorso.objects.get_or_create(
+                        id=row[0],
+                        defaults={
+                            'anno_accademico': anno,
+                            'corso': corso,
+                            'quadrimestre': quad,
+                            'descrizione_custom': row[3] or '',
+                            'docente': docente,
+                            'assistente_id': row[6] if row[6] else None,
+                            'vice_assistente_id': row[7] if row[7] else None,
+                            'giorni_settimana': row[8] or '',
+                            'ora_inizio': row[9] if row[9] else '09:00',
+                            'ora_fine': row[10] if row[10] else '11:00',
+                            'note': row[11] or ''
+                        }
                     )
                     self.stats['edizioni'] += 1
                     
@@ -485,11 +491,13 @@ class Command(BaseCommand):
                     iscritto = Iscritto.objects.filter(matricola=row[1]).first()
                     
                     if anno and iscritto:
-                        IscrizioneAnnoAccademico.objects.create(
+                        IscrizioneAnnoAccademico.objects.get_or_create(
                             anno_accademico=anno,
                             iscritto=iscritto,
-                            numero_ricevuta=row[2] or 0,
-                            data_iscrizione=row[3] if row[3] else anno.data_inizio
+                            defaults={
+                                'numero_ricevuta': row[2] or 0,
+                                'data_iscrizione': row[3] if row[3] else anno.data_inizio
+                            }
                         )
                         self.stats['iscrizioni_anno'] += 1
                 except Exception as e:
