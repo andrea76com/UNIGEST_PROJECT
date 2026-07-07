@@ -1,8 +1,8 @@
 """
 UNIGEST - Import Old Data Command
 File: core/management/commands/import_old_data.py
-Descrizione: Script ottimizzato per importare i dati dal vecchio database Access/MySQL.
-Include correzioni per il formato degli anni accademici e logiche dagli script utente.
+Descrizione: Script ottimizzato e PERMISSIVO per importare i dati dal vecchio database Access/MySQL.
+Gestisce i valori 0 per docenti, corsi e quadrimestri per massimizzare il recupero dati.
 
 Utilizzo:
     python manage.py import_old_data [--verbose] [--dry-run]
@@ -29,7 +29,7 @@ class Command(BaseCommand):
         parser.add_argument(
             '--dry-run',
             action='store_true',
-            help='Simula l\'importazione senza salvare modifiche definitive (usa get_or_create)',
+            help='Simula l\'importazione senza salvare modifiche definitive',
         )
         parser.add_argument(
             '--verbose',
@@ -65,11 +65,16 @@ class Command(BaseCommand):
         self.verbose = options['verbose']
 
         self.stdout.write(self.style.SUCCESS('\n' + '='*70))
-        self.stdout.write(self.style.SUCCESS('  UNIGEST - IMPORTAZIONE DATI OTTIMIZZATA'))
+        self.stdout.write(self.style.SUCCESS('  UNIGEST - IMPORTAZIONE DATI PERMISSIVA (v2.0)'))
         self.stdout.write(self.style.SUCCESS('='*70 + '\n'))
 
         if self.dry_run:
             self.stdout.write(self.style.WARNING('!!! MODALITÀ DRY-RUN ATTIVA !!!\n'))
+
+        # Inizializzazione Quadrimestri
+        if not self.dry_run:
+            Quadrimestre.objects.get_or_create(numero=1)
+            Quadrimestre.objects.get_or_create(numero=2)
 
         # Ordine di esecuzione per rispettare i ForeignKey
         tasks = [
@@ -77,7 +82,7 @@ class Command(BaseCommand):
             ('Anagrafiche (Docenti, Autorità)', self.import_staff),
             ('Iscritti e Coniugi', self.import_iscritti),
             ('Catalogo Corsi', self.import_catalogo),
-            ('Anni e Quadrimestri', self.import_periodi),
+            ('Anni Accademici', self.import_periodi),
             ('Edizioni Corsi Annuali', self.import_edizioni),
             ('Iscrizioni (Anno e Corsi)', self.import_iscrizioni),
             ('Lezioni effettuate', self.import_lezioni),
@@ -126,6 +131,9 @@ class Command(BaseCommand):
         cursor = connections['old_database'].cursor()
         
         # Docenti
+        if not self.dry_run:
+            Docente.objects.get_or_create(id=0, defaults={'nome': 'DOCENTE GENERICO', 'attivo': True})
+
         cursor.execute("SELECT ID, Prefisso, Insegnante, Telefono, Cellulare, Indirizzo, Paese, Email FROM `TDocenti`")
         for row in cursor.fetchall():
             try:
@@ -133,7 +141,7 @@ class Command(BaseCommand):
                     Docente.objects.get_or_create(id=row[0], defaults={
                         'titolo': row[1] or '', 'nome': row[2] or 'Sconosciuto',
                         'telefono': row[3] or '', 'cellulare': row[4] or '',
-                        'indirizzo': row[5] or '', 'comune_id': row[6] if row[6] else None,
+                        'indirizzo': row[5] or '', 'comune_id': row[6] if row[6] and row[6] != 0 else None,
                         'email': row[7] or '', 'attivo': True
                     })
                 self.stats['docenti'] += 1
@@ -166,24 +174,29 @@ class Command(BaseCommand):
         for row in iscritti_rows:
             try:
                 if not self.dry_run:
+                    # CF handling
+                    cf = str(row[11]) if row[11] else None
+                    if cf and len(cf) < 10: cf = None # CF troppo corti causano problemi
+
                     Iscritto.objects.get_or_create(matricola=row[0], defaults={
                         'sesso': 'M' if row[1] == 'M' else 'F', 'titolo': row[2] or '',
                         'nominativo': row[3] or 'Sconosciuto', 'indirizzo': row[5] or '',
-                        'comune_id': row[6] if row[6] else None, 'telefono': row[7] or '',
+                        'comune_id': row[6] if row[6] and row[6] != 0 else None, 'telefono': row[7] or '',
                         'cellulare': row[8] or '', 'luogo_nascita': row[9] or '',
-                        'data_nascita': row[10] if row[10] else None, 'codice_fiscale': row[11] or None,
-                        'e_pensionato': str(row[12]).lower() in ['si', 'sì', '1', 'true']
+                        'data_nascita': row[10] if isinstance(row[10], datetime) else None,
+                        'codice_fiscale': cf,
+                        'e_pensionato': str(row[12]).lower() in ['si', 'sì', '1', 'true', 'attivo']
                     })
                 self.stats['iscritti'] += 1
             except Exception as e:
                 self.stats['errori'] += 1
-                self.log(f"Errore iscritto {row[0]}: {e}", 'error')
+                if self.verbose: self.log(f"Errore iscritto {row[0]}: {e}", 'error')
 
-        # Seconda passata per coniugi (Logica da collega_coniugi.py)
+        # Seconda passata per coniugi
         if not self.dry_run:
             self.log("Collegamento coniugi...", 'important')
             for row in iscritti_rows:
-                if row[4]: # Moglie (ID)
+                if row[4] and row[4] != 0:
                     try:
                         marito = Iscritto.objects.get(matricola=row[0])
                         moglie = Iscritto.objects.get(matricola=row[4])
@@ -210,13 +223,19 @@ class Command(BaseCommand):
             self.stats['gruppi'] += 1
 
         # Corsi (Master)
+        if not self.dry_run:
+            Corso.objects.get_or_create(codice=0, defaults={'nome': 'CORSO GENERICO'})
+
         cursor.execute("SELECT Codice, Corsi, Dettaglio, CAT, GRUPPO FROM `TCorsi`")
         for row in cursor.fetchall():
             try:
                 if not self.dry_run:
+                    cat_id = row[3] if row[3] and row[3] != 0 else None
+                    grp_id = row[4] if row[4] and row[4] != 0 else None
+
                     Corso.objects.get_or_create(codice=row[0], defaults={
                         'nome': row[1] or f"Corso {row[0]}", 'descrizione': row[2] or '',
-                        'categoria_id': row[3] if row[3] else None, 'gruppo_id': row[4] if row[4] else None
+                        'categoria_id': cat_id, 'gruppo_id': grp_id
                     })
                 self.stats['corsi'] += 1
             except Exception as e:
@@ -225,14 +244,17 @@ class Command(BaseCommand):
     def import_periodi(self):
         cursor = connections['old_database'].cursor()
         
-        # Anni Accademici (FIX FORMATO: 2023/2024 -> 2023-2024)
+        # Anni Accademici
         cursor.execute("SELECT AnnoAccademico FROM `TAnnoAccademico` ORDER BY progr DESC")
         for i, row in enumerate(cursor.fetchall()):
             if not row[0]: continue
             anno_fix = str(row[0]).replace('/', '-')
             try:
                 if not self.dry_run:
-                    anno_inizio = int(anno_fix.split('-')[0])
+                    # Estrazione anno inizio sicura
+                    parti = anno_fix.split('-')
+                    anno_inizio = int(parti[0]) if parti[0].isdigit() else 2000
+
                     AnnoAccademico.objects.get_or_create(anno=anno_fix, defaults={
                         'data_inizio': datetime(anno_inizio, 10, 1).date(),
                         'data_fine': datetime(anno_inizio + 1, 5, 31).date(),
@@ -241,11 +263,6 @@ class Command(BaseCommand):
                 self.stats['anni'] += 1
             except Exception as e:
                 self.log(f"Errore anno {row[0]}: {e}", 'error')
-
-        # Quadrimestri
-        if not self.dry_run:
-            Quadrimestre.objects.get_or_create(numero=1)
-            Quadrimestre.objects.get_or_create(numero=2)
 
     def import_edizioni(self):
         cursor = connections['old_database'].cursor()
@@ -258,11 +275,20 @@ class Command(BaseCommand):
             try:
                 anno_fix = str(row[1]).replace('/', '-')
                 anno = AnnoAccademico.objects.filter(anno=anno_fix).first()
-                corso = Corso.objects.filter(codice=row[2]).first()
-                docente = Docente.objects.filter(id=row[5]).first()
-                quad = Quadrimestre.objects.filter(numero=row[4]).first()
 
-                if anno and corso and docente and quad and not self.dry_run:
+                # Corso - Fallback a 0
+                corso = Corso.objects.filter(codice=row[2]).first()
+                if not corso: corso = Corso.objects.get(codice=0)
+
+                # Docente - Fallback a 0
+                docente = Docente.objects.filter(id=row[5]).first()
+                if not docente: docente = Docente.objects.get(id=0)
+
+                # Quadrimestre - Mappatura 0 -> 1
+                q_num = row[4] if row[4] in [1, 2] else 1
+                quad = Quadrimestre.objects.get(numero=q_num)
+
+                if anno and not self.dry_run:
                     EdizioneCorso.objects.get_or_create(id=row[0], defaults={
                         'anno_accademico': anno, 'corso': corso, 'quadrimestre': quad,
                         'docente': docente, 'descrizione_custom': row[3] or '',
@@ -270,15 +296,18 @@ class Command(BaseCommand):
                         'ora_fine': row[10] or '11:00'
                     })
                     self.stats['edizioni'] += 1
-                elif not self.dry_run:
+                elif not anno:
+                    if self.verbose: self.log(f"Edizione {row[0]} saltata: Anno {row[1]} non trovato", 'warning')
                     self.stats['errori'] += 1
             except Exception as e:
                 self.stats['errori'] += 1
+                if self.verbose: self.log(f"Errore edizione {row[0]}: {e}", 'error')
 
     def import_iscrizioni(self):
         cursor = connections['old_database'].cursor()
         
         # Iscrizioni Anno
+        self.log("Importazione Iscrizioni Anno...", 'important')
         cursor.execute("SELECT AnnoAccademico, Matricola, Ricevuta, Data FROM `TIscrizioneAnnoAccademico`")
         for row in cursor.fetchall():
             try:
@@ -288,26 +317,33 @@ class Command(BaseCommand):
                 if anno and iscritto and not self.dry_run:
                     IscrizioneAnnoAccademico.objects.get_or_create(
                         anno_accademico=anno, iscritto=iscritto,
-                        defaults={'numero_ricevuta': row[2] or 0, 'data_iscrizione': row[3] or anno.data_inizio}
+                        defaults={'numero_ricevuta': row[2] or 0, 'data_iscrizione': row[3] if isinstance(row[3], datetime) else anno.data_inizio}
                     )
                     self.stats['isc_anno'] += 1
             except:
                 self.stats['errori'] += 1
 
         # Iscrizioni Corsi
+        self.log("Importazione Iscrizioni ai Corsi...", 'important')
         cursor.execute("SELECT AnnoAccademico, Corso, Matricola, Ricevuta, Data FROM `TFrequenzaCorsi`")
         for row in cursor.fetchall():
             try:
                 anno_fix = str(row[0]).replace('/', '-')
                 anno = AnnoAccademico.objects.filter(anno=anno_fix).first()
                 iscritto = Iscritto.objects.filter(matricola=row[2]).first()
+
+                # Trova edizione cercando prima quella specifica dell'anno
                 edizione = EdizioneCorso.objects.filter(anno_accademico=anno, corso__codice=row[1]).first()
+
                 if anno and iscritto and edizione and not self.dry_run:
                     IscrizioneCorso.objects.get_or_create(
                         anno_accademico=anno, iscritto=iscritto, edizione_corso=edizione,
-                        defaults={'numero_ricevuta': row[3] or 0, 'data_iscrizione': row[4] or anno.data_inizio}
+                        defaults={'numero_ricevuta': row[3] or 0, 'data_iscrizione': row[4] if isinstance(row[4], datetime) else anno.data_inizio}
                     )
                     self.stats['isc_corso'] += 1
+                elif anno and iscritto and not edizione:
+                    if self.verbose: self.log(f"Iscrizione saltata: Nessuna edizione per corso {row[1]} nell'anno {row[0]}", 'warning')
+                    self.stats['errori'] += 1
             except:
                 self.stats['errori'] += 1
 
@@ -318,11 +354,13 @@ class Command(BaseCommand):
             try:
                 edizione = EdizioneCorso.objects.filter(id=row[0]).first()
                 if edizione and row[1] and not self.dry_run:
+                    doc_id = row[3] if Docente.objects.filter(id=row[3]).exists() else edizione.docente_id
+
                     Lezione.objects.get_or_create(
                         edizione_corso=edizione, data_lezione=row[1],
                         defaults={
                             'descrizione': row[2] or '',
-                            'docente_id': row[3] if row[3] else edizione.docente_id,
+                            'docente_id': doc_id,
                             'numero_presenti': row[4] or 0,
                             'ore_lezione': float(row[5]) if row[5] else 2.0
                         }
@@ -333,7 +371,7 @@ class Command(BaseCommand):
 
     def print_summary(self):
         self.stdout.write('\n' + '='*70)
-        self.stdout.write(self.style.SUCCESS('  RIEPILOGO IMPORTAZIONE FINALE'))
+        self.stdout.write(self.style.SUCCESS('  RIEPILOGO IMPORTAZIONE FINALE (Migliorata)'))
         self.stdout.write('='*70)
         self.stdout.write(f"  • Comuni: {self.stats['comuni']} | Titoli: {self.stats['titoli']}")
         self.stdout.write(f"  • Professioni: {self.stats['prof_att']} attuali, {self.stats['prof_pass']} passate")
@@ -345,6 +383,6 @@ class Command(BaseCommand):
         self.stdout.write(f"  • Iscrizioni: {self.stats['isc_anno']} annuali, {self.stats['isc_corso']} ai corsi")
         
         if self.stats['errori'] > 0:
-            self.stdout.write(self.style.WARNING(f"\n  ⚠️ Record non importati per errori: {self.stats['errori']}"))
+            self.stdout.write(self.style.WARNING(f"\n  ⚠️ Record non importati per errori o dati mancanti: {self.stats['errori']}"))
         
         self.stdout.write('\n' + '='*70 + '\n')
