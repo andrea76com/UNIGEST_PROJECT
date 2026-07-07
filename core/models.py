@@ -328,11 +328,13 @@ class AnnoAccademico(models.Model):
 
 class Quadrimestre(models.Model):
     """
-    Modello per i quadrimestri (1° e 2°)
+    Modello per i quadrimestri (0, 1, 2, 3)
     """
     QUADRIMESTRE_CHOICES = [
+        (0, 'Non assegnato / Annuale'),
         (1, '1° Quadrimestre (Ottobre-Gennaio)'),
         (2, '2° Quadrimestre (Febbraio-Aprile)'),
+        (3, 'Entrambi i Quadrimestri'),
     ]
     
     numero = models.IntegerField(choices=QUADRIMESTRE_CHOICES, unique=True, verbose_name="Quadrimestre")

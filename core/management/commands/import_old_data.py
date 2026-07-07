@@ -65,16 +65,16 @@ class Command(BaseCommand):
         self.verbose = options['verbose']
 
         self.stdout.write(self.style.SUCCESS('\n' + '='*70))
-        self.stdout.write(self.style.SUCCESS('  UNIGEST - IMPORTAZIONE DATI PERMISSIVA (v2.0)'))
+        self.stdout.write(self.style.SUCCESS('  UNIGEST - IMPORTAZIONE DATI PERMISSIVA (v2.1)'))
         self.stdout.write(self.style.SUCCESS('='*70 + '\n'))
 
         if self.dry_run:
             self.stdout.write(self.style.WARNING('!!! MODALITÀ DRY-RUN ATTIVA !!!\n'))
 
-        # Inizializzazione Quadrimestri
+        # Inizializzazione Quadrimestri (LOGICA: 0, 1, 2, 3)
         if not self.dry_run:
-            Quadrimestre.objects.get_or_create(numero=1)
-            Quadrimestre.objects.get_or_create(numero=2)
+            for q in [0, 1, 2, 3]:
+                Quadrimestre.objects.get_or_create(numero=q)
 
         # Ordine di esecuzione per rispettare i ForeignKey
         tasks = [
@@ -284,8 +284,8 @@ class Command(BaseCommand):
                 docente = Docente.objects.filter(id=row[5]).first()
                 if not docente: docente = Docente.objects.get(id=0)
 
-                # Quadrimestre - Mappatura 0 -> 1
-                q_num = row[4] if row[4] in [1, 2] else 1
+                # Quadrimestre - LOGICA RICHIESTA: 0=non assegnato, 1=1°, 2=2°, 3=entrambi
+                q_num = row[4] if row[4] in [0, 1, 2, 3] else 0
                 quad = Quadrimestre.objects.get(numero=q_num)
 
                 if anno and not self.dry_run:
