@@ -67,7 +67,7 @@ fi
 
 # Attivazione venv e installazione
 . venv/bin/activate
-pip install --upgrade pip
+pip install --upgrade pip setuptools wheel
 pip install -r requirements.txt
 
 # 6. Configurazione ambiente (.env)
