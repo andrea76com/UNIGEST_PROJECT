@@ -210,26 +210,28 @@ class Command(BaseCommand):
         for row in cursor.fetchall():
             try:
                 anno_val = str(row[1]).replace('/', '-')
+                anno = AnnoAccademico.objects.filter(anno=anno_val).first()
                 if not self.dry_run:
-                    anno = AnnoAccademico.objects.filter(anno=anno_val).first()
                     corso = Corso.objects.filter(codice=row[2]).first() or Corso.objects.get(codice=0)
                     docente = Docente.objects.filter(id=row[5]).first() or Docente.objects.get(id=99999)
                 else:
-                    anno = AnnoAccademico.objects.filter(anno=anno_val).first()
                     corso = Corso.objects.filter(codice=row[2]).first() or self.mock_corso
                     docente = Docente.objects.filter(id=row[5]).first() or self.mock_docente
-                    q_num = row[4] if row[4] in [0, 1, 2, 3] else 0
-                    if anno:
+
+                q_num = row[4] if row[4] in [0, 1, 2, 3] else 0
+                if anno:
+                    if not self.dry_run:
                         EdizioneCorso.objects.get_or_create(id=row[0], defaults={
                             'anno_accademico': anno, 'corso': corso, 'quadrimestre_id': q_num,
                             'docente': docente, 'descrizione_custom': row[3] or '',
                             'giorni_settimana': row[8] or '', 'ora_inizio': row[9] or '09:00',
                             'ora_fine': row[10] or '11:00'
                         })
-                        self.stats['edizioni'] += 1
-                    else: self.stats['errori'] += 1
-                else: self.stats['edizioni'] += 1
-            except: self.stats['errori'] += 1
+                    self.stats['edizioni'] += 1
+                else: self.stats['errori'] += 1
+            except Exception as e:
+                self.stats['errori'] += 1
+                if self.verbose: self.log(f"Errore edizione {row[0]}: {e}", 'error')
 
     def import_iscrizioni(self):
         cursor = connections['old_database'].cursor()
