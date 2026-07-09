@@ -55,6 +55,11 @@ class Command(BaseCommand):
             for q in [0, 1, 2, 3]: Quadrimestre.objects.get_or_create(numero=q)
             Docente.objects.get_or_create(id=99999, defaults={'nome': 'DOCENTE GENERICO', 'attivo': True})
             Corso.objects.get_or_create(codice=0, defaults={'nome': 'CORSO GENERICO'})
+        else:
+            # Crea fallback fittizi per evitare errori durante il dry-run
+            from unittest.mock import MagicMock
+            self.mock_docente = MagicMock(spec=Docente, id=99999)
+            self.mock_corso = MagicMock(spec=Corso, codice=0)
 
         tasks = [
             ('Tabelle Supporto', self.import_supporto),
@@ -204,10 +209,15 @@ class Command(BaseCommand):
         cursor.execute("SELECT * FROM `TCorsiAnnualiDocenti`")
         for row in cursor.fetchall():
             try:
+                anno_val = str(row[1]).replace('/', '-')
                 if not self.dry_run:
-                    anno = AnnoAccademico.objects.filter(anno=str(row[1]).replace('/', '-')).first()
+                    anno = AnnoAccademico.objects.filter(anno=anno_val).first()
                     corso = Corso.objects.filter(codice=row[2]).first() or Corso.objects.get(codice=0)
                     docente = Docente.objects.filter(id=row[5]).first() or Docente.objects.get(id=99999)
+                else:
+                    anno = AnnoAccademico.objects.filter(anno=anno_val).first()
+                    corso = Corso.objects.filter(codice=row[2]).first() or self.mock_corso
+                    docente = Docente.objects.filter(id=row[5]).first() or self.mock_docente
                     q_num = row[4] if row[4] in [0, 1, 2, 3] else 0
                     if anno:
                         EdizioneCorso.objects.get_or_create(id=row[0], defaults={

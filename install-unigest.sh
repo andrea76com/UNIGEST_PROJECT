@@ -16,7 +16,7 @@ echo "===================================================="
 # 1. Installazione dipendenze di sistema
 echo -e "\n[1/7] Installazione dipendenze di sistema..."
 sudo apt-get update
-sudo apt-get install -y git python3 python3-venv python3-dev default-libmysqlclient-dev build-essential mariadb-server mariadb-client
+sudo apt-get install -y git python3 python3-venv python3-dev default-libmysqlclient-dev build-essential mariadb-server mariadb-client pkg-config
 
 # 2. Download del progetto (Git)
 if [ ! -d "$PROJECT_DIR" ]; then

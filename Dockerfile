@@ -26,10 +26,8 @@ RUN pip install --upgrade pip && \
 # Copia il resto del codice dell'applicazione
 COPY . /app/
 
-# Rendi eseguibile lo script di entrypoint (verrà creato nel prossimo step)
-# Se il file non esiste ancora, il comando fallirà se lo metto qui ora.
-# Lo aggiungerò dopo aver creato il file o userò una tecnica sicura.
-# Per ora lo commento o assumo di crearlo subito dopo.
+# Assicura i permessi per lo script di entrypoint
+RUN chmod +x /app/docker-entrypoint.sh
 
 # Espone la porta 8000
 EXPOSE 8000
