@@ -1,21 +1,6 @@
 version: '3.8'
 
 services:
-  db:
-    image: mariadb:10.11
-    container_name: unigest_db
-    restart: always
-    environment:
-      MARIADB_DATABASE: ${DB_NAME}
-      MARIADB_USER: ${DB_USER}
-      MARIADB_PASSWORD: ${DB_PASSWORD}
-      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-    volumes:
-      - db_data:/var/lib/mysql
-      - ./init-db:/docker-entrypoint-initdb.d
-    networks:
-      - unigest_network
-
   web:
     build: .
     container_name: unigest_web
@@ -27,13 +12,12 @@ services:
       - logs_volume:/app/logs
     env_file:
       - .env
-    environment:
-      - DB_HOST=db
-      - DB_PORT=3306
+    # DB_HOST e DB_PORT devono essere configurati nel file .env
+    # per puntare all'host (es. 172.17.0.1 o l'IP della macchina)
     ports:
       - "8000:8000"
-    depends_on:
-      - db
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - unigest_network
 
@@ -42,7 +26,6 @@ networks:
     driver: bridge
 
 volumes:
-  db_data:
   static_volume:
   media_volume:
   logs_volume:
