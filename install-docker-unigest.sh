@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# UNIGEST - Script di Installazione Docker
+# UNIGEST - Script di Installazione Docker (v1.2)
 # Supportato su Debian/Ubuntu
 
 set -e
@@ -40,13 +40,9 @@ mkdir -p init-db logs static media
 
 # 4. Istruzioni per il Database
 echo "[4/6] Configurazione Database..."
-echo "IMPORTANTE: Copia il tuo file .sql del database originale dentro la cartella 'init-db/'"
+echo "IMPORTANTE: Copia il tuo file .sql del database (dump completo: core, auth, django) in 'init-db/'"
 echo "MariaDB lo importerà automaticamente al primo avvio."
 echo ""
-read -p "Hai già copiato il file .sql in init-db/? (s/n): " answer
-if [[ $answer != "s" ]]; then
-    echo "Puoi farlo anche dopo, ma dovrai riavviare il container del database."
-fi
 
 # 5. Avvio dei container
 echo "[5/6] Avvio di UNIGEST in Docker..."
@@ -61,6 +57,10 @@ fi
 echo "[6/6] Installazione completata!"
 echo "Il servizio è ora disponibile su http://localhost:8000"
 echo "I container si riavvieranno automaticamente al riavvio del server (restart: always)."
+echo ""
+echo "Note per il trasferimento su altra macchina:"
+echo " 1. Salva immagine: docker save unigest-web | gzip > image.tar.gz"
+echo " 2. Carica immagine: docker load < image.tar.gz"
 echo ""
 echo "Comandi utili:"
 echo " - Visualizza log: sudo docker compose logs -f"
