@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  db:
+    image: mariadb:10.11
+    container_name: unigest_db
+    restart: always
+    environment:
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init-db:/docker-entrypoint-initdb.d
+    networks:
+      - unigest_network
+
+  web:
+    build: .
+    container_name: unigest_web
+    restart: always
+    volumes:
+      - .:/app
+      - static_volume:/app/static
+      - media_volume:/app/media
+      - logs_volume:/app/logs
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - unigest_network
+
+networks:
+  unigest_network:
+    driver: bridge
+
+volumes:
+  db_data:
+  static_volume:
+  media_volume:
+  logs_volume:
