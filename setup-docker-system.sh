@@ -9,8 +9,8 @@ set -e
 echo "--- UNIGEST: Installazione Docker sul Sistema ---"
 
 # 1. Aggiornamento sistema
-echo "[1/3] Aggiornamento pacchetti di sistema..."
-sudo apt-get update && sudo apt-get upgrade -y
+echo "[1/3] Aggiornamento pacchetti di sistema e installazione curl..."
+sudo apt-get update && sudo apt-get install -y curl && sudo apt-get upgrade -y
 
 # 2. Installazione Docker
 if ! command -v docker &> /dev/null; then

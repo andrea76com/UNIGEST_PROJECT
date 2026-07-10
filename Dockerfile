@@ -26,11 +26,12 @@ RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt && \
     pip install --no-cache-dir gunicorn
 
+# Copia esplicitamente l'entrypoint prima del resto per sicurezza
+COPY docker-entrypoint.sh /app/
+RUN chmod +x /app/docker-entrypoint.sh
+
 # Copia il resto del codice dell'applicazione
 COPY . /app/
-
-# Assicura i permessi per lo script di entrypoint
-RUN chmod +x /app/docker-entrypoint.sh
 
 # Espone la porta 8000
 EXPOSE 8000
