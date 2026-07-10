@@ -12,8 +12,6 @@ services:
       - logs_volume:/app/logs
     env_file:
       - .env
-    # DB_HOST e DB_PORT devono essere configurati nel file .env
-    # per puntare all'host (es. 172.17.0.1 o l'IP della macchina)
     ports:
       - "8000:8000"
     extra_hosts:

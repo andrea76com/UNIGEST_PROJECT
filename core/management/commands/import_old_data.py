@@ -1,8 +1,8 @@
 """
 UNIGEST - Import Old Data Command
 File: core/management/commands/import_old_data.py
-Descrizione: Script v2.4 - FIX DEFINITIVO MAPPING E CATALOGO.
-Corregge gli indici basandosi sulla diagnostica reale di UNIPIEVE.
+Descrizione: Script v2.5 - FIX LOGICA QUADRIMESTRE E DRY-RUN.
+Corregge il collegamento delle edizioni e il supporto alla simulazione.
 """
 
 import logging
@@ -48,18 +48,30 @@ class Command(BaseCommand):
         self.verbose = options['verbose']
 
         self.stdout.write(self.style.SUCCESS('\n' + '='*70))
-        self.stdout.write(self.style.SUCCESS('  UNIGEST - IMPORTAZIONE DATI FINALE (v2.4)'))
+        self.stdout.write(self.style.SUCCESS(f"  UNIGEST - IMPORTAZIONE DATI (v2.5{' - DRY RUN' if self.dry_run else ''})"))
         self.stdout.write(self.style.SUCCESS('='*70 + '\n'))
 
+        # Cache oggetti per velocizzare e gestire dry-run
+        self.cache = {
+            'quadrimestri': {},
+            'docente_generico': None,
+            'corso_generico': None
+        }
+
         if not self.dry_run:
-            for q in [0, 1, 2, 3]: Quadrimestre.objects.get_or_create(numero=q)
-            Docente.objects.get_or_create(id=99999, defaults={'nome': 'DOCENTE GENERICO', 'attivo': True})
-            Corso.objects.get_or_create(codice=0, defaults={'nome': 'CORSO GENERICO'})
+            for q_num in [0, 1, 2, 3]:
+                q, _ = Quadrimestre.objects.get_or_create(numero=q_num)
+                self.cache['quadrimestri'][q_num] = q
+
+            self.cache['docente_generico'], _ = Docente.objects.get_or_create(id=99999, defaults={'nome': 'DOCENTE GENERICO', 'attivo': True})
+            self.cache['corso_generico'], _ = Corso.objects.get_or_create(codice=0, defaults={'nome': 'CORSO GENERICO'})
         else:
-            # Crea fallback fittizi per evitare errori durante il dry-run
+            # Mock per dry-run
             from unittest.mock import MagicMock
-            self.mock_docente = MagicMock(spec=Docente, id=99999)
-            self.mock_corso = MagicMock(spec=Corso, codice=0)
+            for q_num in [0, 1, 2, 3]:
+                self.cache['quadrimestri'][q_num] = MagicMock(spec=Quadrimestre, numero=q_num)
+            self.cache['docente_generico'] = MagicMock(spec=Docente, id=99999, nome='DOCENTE GENERICO')
+            self.cache['corso_generico'] = MagicMock(spec=Corso, codice=0, nome='CORSO GENERICO')
 
         tasks = [
             ('Tabelle Supporto', self.import_supporto),
@@ -78,6 +90,9 @@ class Command(BaseCommand):
                 task_func()
             except Exception as e:
                 self.log(f"Errore critico in {section_name}: {e}", 'error')
+                if self.verbose:
+                    import traceback
+                    traceback.print_exc()
 
         self.print_summary()
 
@@ -211,24 +226,39 @@ class Command(BaseCommand):
             try:
                 anno_val = str(row[1]).replace('/', '-')
                 anno = AnnoAccademico.objects.filter(anno=anno_val).first()
+
+                # Se siamo in dry-run, anno potrebbe essere None se non è ancora nel DB
+                if self.dry_run and not anno:
+                    from unittest.mock import MagicMock
+                    anno = MagicMock(spec=AnnoAccademico, anno=anno_val)
+
+                if not anno:
+                    self.stats['errori'] += 1
+                    continue
+
                 if not self.dry_run:
-                    corso = Corso.objects.filter(codice=row[2]).first() or Corso.objects.get(codice=0)
-                    docente = Docente.objects.filter(id=row[5]).first() or Docente.objects.get(id=99999)
+                    corso = Corso.objects.filter(codice=row[2]).first() or self.cache['corso_generico']
+                    docente = Docente.objects.filter(id=row[5]).first() or self.cache['docente_generico']
                 else:
-                    corso = Corso.objects.filter(codice=row[2]).first() or self.mock_corso
-                    docente = Docente.objects.filter(id=row[5]).first() or self.mock_docente
+                    corso = Corso.objects.filter(codice=row[2]).first() or self.cache['corso_generico']
+                    docente = Docente.objects.filter(id=row[5]).first() or self.cache['docente_generico']
 
                 q_num = row[4] if row[4] in [0, 1, 2, 3] else 0
-                if anno:
-                    if not self.dry_run:
-                        EdizioneCorso.objects.get_or_create(id=row[0], defaults={
-                            'anno_accademico': anno, 'corso': corso, 'quadrimestre_id': q_num,
-                            'docente': docente, 'descrizione_custom': row[3] or '',
-                            'giorni_settimana': row[8] or '', 'ora_inizio': row[9] or '09:00',
-                            'ora_fine': row[10] or '11:00'
-                        })
-                    self.stats['edizioni'] += 1
-                else: self.stats['errori'] += 1
+                quadrimestre = self.cache['quadrimestri'].get(q_num)
+
+                if not self.dry_run:
+                    EdizioneCorso.objects.get_or_create(id=row[0], defaults={
+                        'anno_accademico': anno,
+                        'corso': corso,
+                        'quadrimestre': quadrimestre,
+                        'docente': docente,
+                        'descrizione_custom': row[3] or '',
+                        'giorni_settimana': row[8] or '',
+                        'ora_inizio': row[9] or '09:00',
+                        'ora_fine': row[10] or '11:00'
+                    })
+
+                self.stats['edizioni'] += 1
             except Exception as e:
                 self.stats['errori'] += 1
                 if self.verbose: self.log(f"Errore edizione {row[0]}: {e}", 'error')
@@ -271,7 +301,7 @@ class Command(BaseCommand):
 
     def print_summary(self):
         self.stdout.write('\n' + '='*70)
-        self.stdout.write(self.style.SUCCESS(f"  RIEPILOGO IMPORTAZIONE FINALE (v2.4{' - DRY RUN' if self.dry_run else ''})"))
+        self.stdout.write(self.style.SUCCESS(f"  RIEPILOGO IMPORTAZIONE (v2.5{' - DRY RUN' if self.dry_run else ''})"))
         self.stdout.write('='*70)
         self.stdout.write(f"  • Comuni/Titoli: {self.stats['comuni']} / {self.stats['titoli']}")
         self.stdout.write(f"  • Staff: {self.stats['docenti']} docenti, {self.stats['autorita']} autorità")

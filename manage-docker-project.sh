@@ -29,8 +29,10 @@ case $scelta in
     2)
         echo "Build immagine..."
         docker compose build
-        echo "Salvataggio immagine in unigest_web.tar.gz..."
-        docker save unigest_web | gzip > unigest_web.tar.gz
+        # Ricaviamo il nome esatto dell'immagine generata (solitamente progetto-web)
+        IMAGE_NAME=$(docker compose config --images web)
+        echo "Salvataggio immagine $IMAGE_NAME in unigest_web.tar.gz..."
+        docker save $IMAGE_NAME | gzip > unigest_web.tar.gz
         echo "Fatto! Ora puoi trasferire unigest_web.tar.gz sulla macchina di produzione."
         ;;
     3)

@@ -2,6 +2,11 @@
 # File: requirements.txt
 # Descrizione: Elenco di tutte le librerie Python necessarie per il progetto
 
+# Strumenti di Build (Necessari per Python 3.13)
+setuptools>=70.0.0
+wheel>=0.43.0
+Cython>=3.0.0
+
 # Framework Django
 Django==4.2.7
 
@@ -17,8 +22,8 @@ reportlab==4.0.7
 # Libreria per gestire file Excel (export/import)
 openpyxl==3.1.2
 
-# Libreria per gestire CSV in modo avanzato (Minimo 2.2.3 per compatibilità Python 3.13)
-pandas==2.2.3
+# Libreria per gestire CSV in modo avanzato (Minimo 3.0.3 per piena compatibilità Python 3.13)
+pandas==3.0.3
 
 # Numpy (richiesto da pandas, versione minima per Python 3.13)
 numpy>=2.1.0
