@@ -35,8 +35,8 @@ django-bootstrap-pagination==1.7.1
 # Connettore alternativo MySQL (richiesto in config/__init__.py)
 pymysql==1.2.0
 
-# Pillow per gestione immagini (se necessario in futuro)
-Pillow==10.1.0
+# Pillow per gestione immagini (Minimo 11.0.0 per supporto ufficiale Python 3.13)
+Pillow==11.0.0
 
 # Django Debug Toolbar per sviluppo (opzionale ma consigliato)
 django-debug-toolbar==4.2.0
