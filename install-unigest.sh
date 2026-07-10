@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# UNIGEST - Script di Installazione Completa (v1.3.1)
+# UNIGEST - Script di Installazione Completa (v1.3.2)
 # Compatibile con Debian/Ubuntu
 # Corretto per problemi di permessi, compatibilità Python 3.13 e build fails
 
@@ -10,7 +10,7 @@ REPO_URL="https://github.com/andrea76com/UNIGEST_PROJECT"
 PROJECT_DIR="UNIGEST_PROJECT"
 
 echo "===================================================="
-echo "   UNIGEST - Installazione Gestionale Completa"
+echo "   UNIGEST - Installazione Gestionale Completa v1.3.2"
 echo "===================================================="
 
 # 1. Installazione dipendenze di sistema
@@ -57,20 +57,23 @@ sudo mysql -e "FLUSH PRIVILEGES;"
 
 # 5. Ambiente Virtuale e Dipendenze
 echo -e "\n[5/7] Setup ambiente virtuale Python..."
-if [ ! -d "venv" ]; then
-    python3 -m venv venv
+# Forza la ricreazione del venv per pulire stati corrotti
+if [ -d "venv" ]; then
+    echo "Rilevato venv esistente, lo elimino per una installazione pulita..."
+    rm -rf venv
 fi
+python3 -m venv venv
 
 # Attivazione venv e installazione
 . venv/bin/activate
 
-echo "Aggiornamento strumenti di build..."
+echo "Aggiornamento strumenti di build e installazione pre-requisiti..."
 pip install --upgrade pip setuptools wheel Cython
 
-echo "Installazione dipendenze (questo potrebbe richiedere tempo per pandas)..."
-# Disinstalliamo per evitare conflitti di cache
-pip uninstall -y pandas numpy Pillow || true
-pip install --no-cache-dir numpy>=2.1.0
+echo "Installazione dipendenze (utilizzando wheels dove possibile)..."
+# Installiamo numpy e pandas separatamente per forzare l'uso dei binari
+pip install --no-cache-dir "numpy>=2.1.0"
+pip install --no-cache-dir "pandas==2.2.3"
 pip install --no-cache-dir -r requirements.txt
 
 # 6. Configurazione ambiente (.env)
