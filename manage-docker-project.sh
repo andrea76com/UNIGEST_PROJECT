@@ -24,20 +24,20 @@ read -p "Scegli (1-3): " scelta
 case $scelta in
     1)
         echo "Build e Avvio in corso..."
-        docker compose up -d --build
+        sudo docker compose up -d --build
         ;;
     2)
         echo "Build immagine..."
-        docker compose build
+        sudo docker compose build
         # Ricaviamo il nome esatto dell'immagine generata (solitamente progetto-web)
-        IMAGE_NAME=$(docker compose config --images web)
+        IMAGE_NAME=$(sudo docker compose config --images web)
         echo "Salvataggio immagine $IMAGE_NAME in unigest_web.tar.gz..."
-        docker save $IMAGE_NAME | gzip > unigest_web.tar.gz
+        sudo docker save $IMAGE_NAME | gzip > unigest_web.tar.gz
         echo "Fatto! Ora puoi trasferire unigest_web.tar.gz sulla macchina di produzione."
         ;;
     3)
         echo "Avvio container..."
-        docker compose up -d
+        sudo docker compose up -d
         ;;
     *)
         echo "Scelta non valida."

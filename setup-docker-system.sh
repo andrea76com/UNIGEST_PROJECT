@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# UNIGEST - Script di Configurazione Sistema Docker
+# UNIGEST - Script di Configurazione Sistema Docker (v1.1)
 # Da eseguire sulla macchina dove si vuole installare Docker (Produzione o Sviluppo)
 # Supportato su Debian/Ubuntu
 
@@ -19,7 +19,9 @@ if ! command -v docker &> /dev/null; then
     sudo sh get-docker.sh
     sudo usermod -aG docker $USER
     rm get-docker.sh
-    echo "NOTA: Potrebbe essere necessario riavviare la sessione (logout/login) per usare docker senza sudo."
+    echo ""
+    echo "NOTA IMPORTANTE: Per usare docker senza 'sudo', devi riavviare la sessione (logout/login)."
+    echo "In alternativa, puoi forzare l'aggiornamento dei gruppi ora con: newgrp docker"
 else
     echo "[2/3] Docker è già installato."
 fi
