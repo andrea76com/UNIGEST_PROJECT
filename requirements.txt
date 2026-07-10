@@ -1,50 +1,30 @@
 # UNIGEST - Dipendenze Python
 # File: requirements.txt
-# Descrizione: Elenco di tutte le librerie Python necessarie per il progetto
 
-# Strumenti di Build (Necessari per Python 3.13)
+# --- PRIORITÀ: LIBRERIE PER COMPATIBILITÀ PYTHON 3.13 ---
+# Queste devono essere caricate correttamente tramite wheels (binari)
+numpy==2.1.0
+pandas==2.2.3
+Pillow==11.0.0
+
+# --- STRUMENTI DI BUILD ---
 setuptools>=70.0.0
 wheel>=0.43.0
 Cython>=3.0.0
 
-# Framework Django
+# --- FRAMEWORK DJANGO ---
 Django==4.2.7
 
-# Connettore MySQL per Django
+# --- CONNETTORI DATABASE ---
 mysqlclient==2.2.0
-
-# Libreria per gestire variabili d'ambiente (file .env)
-python-decouple==3.8
-
-# Libreria per generare PDF (report)
-reportlab==4.0.7
-
-# Libreria per gestire file Excel (export/import)
-openpyxl==3.1.2
-
-# Libreria per gestire CSV in modo avanzato (Minimo 2.2.3 per compatibilità Python 3.13)
-pandas==2.2.3
-
-# Numpy (richiesto da pandas, versione minima per Python 3.13)
-numpy>=2.1.0
-
-# Libreria per widget avanzati nei form Django
-django-widget-tweaks==1.5.0
-
-# Libreria per filtrare dati nell'admin e nelle viste
-django-filter==23.3
-
-# Libreria per paginazione avanzata
-django-bootstrap-pagination==1.7.1
-
-# Connettore alternativo MySQL (richiesto in config/__init__.py)
 pymysql==1.2.0
 
-# Pillow per gestione immagini (Minimo 11.0.0 per supporto ufficiale Python 3.13)
-Pillow==11.0.0
-
-# Django Debug Toolbar per sviluppo (opzionale ma consigliato)
+# --- UTILITY E REPORTISTICA ---
+python-decouple==3.8
+reportlab==4.0.7
+openpyxl==3.1.2
+django-widget-tweaks==1.5.0
+django-filter==23.3
+django-bootstrap-pagination==1.7.1
 django-debug-toolbar==4.2.0
-
-# Libreria per backup automatici del database
 django-dbbackup==4.0.2

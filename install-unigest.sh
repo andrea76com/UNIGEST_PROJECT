@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# UNIGEST - Script di Installazione Completa (v1.3.2)
+# UNIGEST - Script di Installazione Completa (v1.3.3)
 # Compatibile con Debian/Ubuntu
-# Corretto per problemi di permessi, compatibilità Python 3.13 e build fails
+# FIX AGGRESSIVO: Dipendenze Python 3.13 e Cache Pip
 
 set -e # Ferma lo script in caso di errore
 
@@ -10,7 +10,7 @@ REPO_URL="https://github.com/andrea76com/UNIGEST_PROJECT"
 PROJECT_DIR="UNIGEST_PROJECT"
 
 echo "===================================================="
-echo "   UNIGEST - Installazione Gestionale Completa v1.3.2"
+echo "   UNIGEST - Installazione Gestionale Completa v1.3.3"
 echo "===================================================="
 
 # 1. Installazione dipendenze di sistema
@@ -57,7 +57,6 @@ sudo mysql -e "FLUSH PRIVILEGES;"
 
 # 5. Ambiente Virtuale e Dipendenze
 echo -e "\n[5/7] Setup ambiente virtuale Python..."
-# Forza la ricreazione del venv per pulire stati corrotti
 if [ -d "venv" ]; then
     echo "Rilevato venv esistente, lo elimino per una installazione pulita..."
     rm -rf venv
@@ -67,19 +66,37 @@ python3 -m venv venv
 # Attivazione venv e installazione
 . venv/bin/activate
 
-echo "Aggiornamento strumenti di build e installazione pre-requisiti..."
-pip install --upgrade pip setuptools wheel Cython
+echo "Verifica contenuto requirements.txt prima dell'installazione:"
+cat requirements.txt
+echo "----------------------------------------------------"
 
-echo "Installazione dipendenze (utilizzando wheels dove possibile)..."
-# Installiamo numpy e pandas separatamente per forzare l'uso dei binari
-pip install --no-cache-dir "numpy>=2.1.0"
-pip install --no-cache-dir "pandas==2.2.3"
+echo "Aggiornamento strumenti di build..."
+pip install --upgrade pip setuptools wheel
+
+echo "Installazione PRIORITARIA (solo binari/wheels per evitare errori Cython)..."
+# Disinstalliamo per sicurezza
+pip uninstall -y pandas numpy Pillow || true
+
+# Forziamo l'uso di binary wheels per le librerie critiche
+pip install --no-cache-dir --only-binary=:all: numpy==2.1.0 pandas==2.2.3 Pillow==11.0.0
+
+echo "Installazione altre dipendenze..."
 pip install --no-cache-dir -r requirements.txt
 
 # 6. Configurazione ambiente (.env)
 echo -e "\n[6/7] Configurazione file .env..."
 if [ ! -f ".env" ]; then
-    cp .env.example .env || echo "SECRET_KEY=unigest-secret-$(date +%s)" > .env
+    if [ -f ".env.example" ]; then
+        cp .env.example .env
+    else
+        echo "SECRET_KEY=unigest-secret-$(date +%s)" > .env
+        echo "DEBUG=True" >> .env
+        echo "DB_NAME=unigest_db" >> .env
+        echo "DB_USER=unigest_user" >> .env
+        echo "DB_PASSWORD=cultura" >> .env
+        echo "DB_HOST=localhost" >> .env
+        echo "DB_PORT=3306" >> .env
+    fi
 fi
 
 # 7. Inizializzazione Django
