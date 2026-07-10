@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# UNIGEST - Script di Installazione Completa (v1.3.5)
+# UNIGEST - Script di Installazione Completa (v1.3.6)
 # Compatibile con Debian/Ubuntu
-# FIX DIAGNOSTICO: Verifica Git e requirements.txt
+# FIX: Autoriparazione requirements.txt e Diagnostica Avanzata
 
 set -e # Ferma lo script in caso di errore
 
@@ -10,7 +10,7 @@ REPO_URL="https://github.com/andrea76com/UNIGEST_PROJECT"
 PROJECT_DIR="UNIGEST_PROJECT"
 
 echo "===================================================="
-echo "   UNIGEST - Installazione Gestionale Completa v1.3.5"
+echo "   UNIGEST - Installazione Gestionale Completa v1.3.6"
 echo "===================================================="
 
 # 1. Installazione dipendenze di sistema
@@ -22,48 +22,37 @@ sudo apt-get install -y git curl python3 python3-venv python3-dev default-libmys
 echo -e "\n[2/7] Verifica stato Repository Git..."
 
 if [ -f "manage.py" ]; then
-    CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+    CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "non-git")
     echo "  • Branch attuale: $CURRENT_BRANCH"
 
-    # Se il branch non è quello di sviluppo di Jules, avvisiamo
-    if [[ "$CURRENT_BRANCH" != "jules-"* ]]; then
-        echo "  • ATTENZIONE: Non sei sul branch di sviluppo Jules."
-    fi
-
-    echo "  • Verifica aggiornamenti in corso..."
-    if ! git pull; then
-        echo "  • Git pull fallito (conflitti locali?)."
-        read -p "  • Vuoi forzare il riallineamento totale col server? (s/n): " force_sync
-        if [[ $force_sync == "s" ]]; then
-            git reset --hard origin/$CURRENT_BRANCH
-            git pull
-        fi
-    fi
+    echo "  • Verifica aggiornamenti..."
+    git pull || echo "  • Nota: git pull non riuscito, procedo con i file locali."
     CURRENT_DIR=$(pwd)
 else
-    # Se non siamo in una cartella git, cloniamo
     if [ ! -d "$PROJECT_DIR" ]; then
         echo "  • Download del progetto..."
         git clone "$REPO_URL" "$PROJECT_DIR"
         cd "$PROJECT_DIR"
     else
         cd "$PROJECT_DIR"
-        git pull
+        git pull || true
     fi
     CURRENT_DIR=$(pwd)
 fi
 
-# Verifica REALE del contenuto di requirements.txt
-echo "  • Controllo versioni in requirements.txt..."
-DETECTED_PANDAS=$(grep "pandas==" requirements.txt | cut -d'=' -f3)
-echo "  • Versione pandas rilevata: '$DETECTED_PANDAS'"
-
-if [[ "$DETECTED_PANDAS" == "2.1.3" ]]; then
-    echo -e "\n[!] ERRORE CRITICO: requirements.txt contiene ancora la versione 2.1.3."
-    echo "    Il tuo repository locale non è sincronizzato correttamente."
-    echo "    Esegui questi comandi manualmente e riavvia lo script:"
-    echo "    git fetch origin"
-    echo "    git reset --hard origin/$(git rev-parse --abbrev-ref HEAD)"
+# AUTORIPARAZIONE requirements.txt
+echo "  • Controllo integrità requirements.txt..."
+if [ -f "requirements.txt" ]; then
+    # Forza la versione corretta di pandas se trova quella vecchia
+    if grep -q "pandas==2.1.3" requirements.txt; then
+        echo "  • Rilevato pandas 2.1.3 errato. Applico patch automatica..."
+        sed -i 's/pandas==2.1.3/pandas==2.2.3/g' requirements.txt
+    fi
+    # Visualizza la riga attuale per conferma
+    PANDAS_LINE=$(grep "pandas==" requirements.txt || echo "non trovato")
+    echo "  • Configurazione pandas: $PANDAS_LINE"
+else
+    echo "  • ERRORE: requirements.txt non trovato!"
     exit 1
 fi
 
@@ -91,7 +80,7 @@ echo "  • Aggiornamento pip e strumenti di build..."
 pip install --upgrade pip setuptools wheel
 
 echo "  • Installazione binari (wheels) per Python 3.13..."
-# Usiamo --only-binary per evitare che parta la compilazione di Cython che fallisce
+# Installiamo separatamente i binari critici
 pip install --no-cache-dir --only-binary=:all: numpy==2.1.0 pandas==2.2.3 Pillow==11.0.0
 
 echo "  • Installazione altre dipendenze..."
