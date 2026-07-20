@@ -81,8 +81,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database configuration
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# Database principale UNIGEST (Scelta dinamica tra MySQL e SQLite)
-DB_ENGINE = config('DB_ENGINE', default='mysql')
+# Database principale UNIGEST (Scelta dinamica tra MySQL e SQLite - default sqlite per sicurezza)
+DB_ENGINE = config('DB_ENGINE', default='sqlite')
 
 if DB_ENGINE == 'sqlite':
     DATABASES = {

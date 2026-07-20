@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# UNIGEST - Script di Installazione Completa (v1.3.7)
+# UNIGEST - Script di Installazione Completa (v1.3.8)
 # Compatibile con Debian/Ubuntu
-# FIX: Supporto completo SQLite / MariaDB
+# FIX: Autoriparazione .env e Safe-Default SQLite
 
 set -e # Ferma lo script in caso di errore
 
@@ -10,7 +10,7 @@ REPO_URL="https://github.com/andrea76com/UNIGEST_PROJECT"
 PROJECT_DIR="UNIGEST_PROJECT"
 
 echo "===================================================="
-echo "   UNIGEST - Installazione Gestionale v1.3.7"
+echo "   UNIGEST - Installazione Gestionale v1.3.8"
 echo "===================================================="
 
 # Scelta del Database
@@ -91,11 +91,7 @@ if [ ! -f ".env" ]; then
         echo "DEBUG=True" >> .env
         echo "DB_ENGINE=sqlite" >> .env
         echo "DB_NAME=db.sqlite3" >> .env
-        echo "OLD_DB_NAME=UNIPIEVE" >> .env
-        echo "OLD_DB_USER=root" >> .env
-        echo "OLD_DB_PASSWORD=" >> .env
-        echo "OLD_DB_HOST=localhost" >> .env
-        echo "OLD_DB_PORT=3306" >> .env
+        echo "OLD_DB_NAME=" >> .env # Rilascia vuoto per evitare connessione automatica a MariaDB
     else
         cp .env.example .env || echo "SECRET_KEY=unigest-$(date +%s)" > .env
     fi
