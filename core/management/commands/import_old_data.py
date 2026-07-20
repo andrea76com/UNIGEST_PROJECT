@@ -1,8 +1,8 @@
 """
 UNIGEST - Import Old Data Command
 File: core/management/commands/import_old_data.py
-Descrizione: Script v2.5 - FIX LOGICA QUADRIMESTRE E DRY-RUN.
-Corregge il collegamento delle edizioni e il supporto alla simulazione.
+Descrizione: Script v2.6 - SUPPORTO COMPLETO MYSQL/SQLITE.
+Corregge il caricamento delle edizioni e supporta dinamicamente la destinazione SQLite o MySQL.
 """
 
 import logging
@@ -48,7 +48,7 @@ class Command(BaseCommand):
         self.verbose = options['verbose']
 
         self.stdout.write(self.style.SUCCESS('\n' + '='*70))
-        self.stdout.write(self.style.SUCCESS(f"  UNIGEST - IMPORTAZIONE DATI (v2.5{' - DRY RUN' if self.dry_run else ''})"))
+        self.stdout.write(self.style.SUCCESS(f"  UNIGEST - IMPORTAZIONE DATI (v2.6{' - DRY RUN' if self.dry_run else ''})"))
         self.stdout.write(self.style.SUCCESS('='*70 + '\n'))
 
         # Cache oggetti per velocizzare e gestire dry-run
@@ -63,6 +63,7 @@ class Command(BaseCommand):
                 q, _ = Quadrimestre.objects.get_or_create(numero=q_num)
                 self.cache['quadrimestri'][q_num] = q
 
+            # Se siamo su SQLite, get_or_create di id specifico potrebbe richiedere cautela ma qui va bene
             self.cache['docente_generico'], _ = Docente.objects.get_or_create(id=99999, defaults={'nome': 'DOCENTE GENERICO', 'attivo': True})
             self.cache['corso_generico'], _ = Corso.objects.get_or_create(codice=0, defaults={'nome': 'CORSO GENERICO'})
         else:
@@ -301,7 +302,7 @@ class Command(BaseCommand):
 
     def print_summary(self):
         self.stdout.write('\n' + '='*70)
-        self.stdout.write(self.style.SUCCESS(f"  RIEPILOGO IMPORTAZIONE (v2.5{' - DRY RUN' if self.dry_run else ''})"))
+        self.stdout.write(self.style.SUCCESS(f"  RIEPILOGO IMPORTAZIONE (v2.6{' - DRY RUN' if self.dry_run else ''})"))
         self.stdout.write('='*70)
         self.stdout.write(f"  • Comuni/Titoli: {self.stats['comuni']} / {self.stats['titoli']}")
         self.stdout.write(f"  • Staff: {self.stats['docenti']} docenti, {self.stats['autorita']} autorità")

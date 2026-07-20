@@ -81,32 +81,43 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database configuration
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# Database principale UNIGEST (nuovo)
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST', default='localhost'),
-        'PORT': config('DB_PORT', default='3306'),
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
-    },
-    # Database vecchio (per migrazione dati)
-    'old_database': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': config('OLD_DB_NAME'),
-        'USER': config('OLD_DB_USER'),
-        'PASSWORD': config('OLD_DB_PASSWORD'),
-        'HOST': config('OLD_DB_HOST', default='localhost'),
-        'PORT': config('OLD_DB_PORT', default='3306'),
-        'OPTIONS': {
-            'charset': 'utf8',
-        },
+# Database principale UNIGEST (Scelta dinamica tra MySQL e SQLite)
+DB_ENGINE = config('DB_ENGINE', default='mysql')
+
+if DB_ENGINE == 'sqlite':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / config('DB_NAME', default='db.sqlite3'),
+        }
     }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': config('DB_NAME'),
+            'USER': config('DB_USER'),
+            'PASSWORD': config('DB_PASSWORD'),
+            'HOST': config('DB_HOST', default='localhost'),
+            'PORT': config('DB_PORT', default='3306'),
+            'OPTIONS': {
+                'charset': 'utf8mb4',
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            },
+        }
+    }
+
+# Aggiungi sempre il database vecchio (per l'importazione dati)
+DATABASES['old_database'] = {
+    'ENGINE': 'django.db.backends.mysql',
+    'NAME': config('OLD_DB_NAME', default='UNIPIEVE'),
+    'USER': config('OLD_DB_USER', default='root'),
+    'PASSWORD': config('OLD_DB_PASSWORD', default=''),
+    'HOST': config('OLD_DB_HOST', default='localhost'),
+    'PORT': config('OLD_DB_PORT', default='3306'),
+    'OPTIONS': {
+        'charset': 'utf8',
+    },
 }
 
 # Password validation
