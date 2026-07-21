@@ -107,18 +107,29 @@ else:
         }
     }
 
-# Aggiungi sempre il database vecchio (per l'importazione dati)
-DATABASES['old_database'] = {
-    'ENGINE': 'django.db.backends.mysql',
-    'NAME': config('OLD_DB_NAME', default='UNIPIEVE'),
-    'USER': config('OLD_DB_USER', default='root'),
-    'PASSWORD': config('OLD_DB_PASSWORD', default=''),
-    'HOST': config('OLD_DB_HOST', default='localhost'),
-    'PORT': config('OLD_DB_PORT', default='3306'),
-    'OPTIONS': {
-        'charset': 'utf8',
-    },
-}
+# Configura 'old_database' in modo che sia opzionale
+# Se MariaDB è spento e stiamo usando SQLite, non deve bloccare il runserver.
+OLD_DB_NAME = config('OLD_DB_NAME', default='')
+
+if OLD_DB_NAME:
+    DATABASES['old_database'] = {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': OLD_DB_NAME,
+        'USER': config('OLD_DB_USER', default='root'),
+        'PASSWORD': config('OLD_DB_PASSWORD', default=''),
+        'HOST': config('OLD_DB_HOST', default='localhost'),
+        'PORT': config('OLD_DB_PORT', default='3306'),
+        'OPTIONS': {
+            'charset': 'utf8',
+        },
+    }
+else:
+    # Se non c'è OLD_DB_NAME, usiamo un fallback fittizio basato su SQLite
+    # che non richiede connessione server e non bloccherà runserver.
+    DATABASES['old_database'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db_dummy_old.sqlite3',
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
