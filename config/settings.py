@@ -107,11 +107,14 @@ else:
         }
     }
 
-# Configura 'old_database' in modo che sia opzionale
-# Se MariaDB è spento e stiamo usando SQLite, non deve bloccare il runserver.
+# Configura 'old_database' in modo che sia attiva SOLO durante l'importazione dati.
+# Negli altri casi (runserver, migrate, ecc.) usiamo un dummy SQLite per evitare tentativi di connessione
+# a MariaDB/MySQL quando il server è spento o non configurato.
+import sys
+IS_IMPORT_RUNNING = 'import_old_data' in sys.argv
 OLD_DB_NAME = config('OLD_DB_NAME', default='')
 
-if OLD_DB_NAME:
+if IS_IMPORT_RUNNING and OLD_DB_NAME:
     DATABASES['old_database'] = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': OLD_DB_NAME,
@@ -124,8 +127,6 @@ if OLD_DB_NAME:
         },
     }
 else:
-    # Se non c'è OLD_DB_NAME, usiamo un fallback fittizio basato su SQLite
-    # che non richiede connessione server e non bloccherà runserver.
     DATABASES['old_database'] = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db_dummy_old.sqlite3',

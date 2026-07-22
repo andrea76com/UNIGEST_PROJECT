@@ -94,17 +94,18 @@ if [ ! -f ".env" ]; then
     fi
 fi
 
+# Assicuriamo la compatibilità Unix rimuovendo caratteri CRLF (\r) da .env
+tr -d '\r' < .env > .env.tmp && mv .env.tmp .env
+
 # AGGIORNIAMO ATTIVAMENTE .env in base alla scelta dell'utente per evitare conflitti stale
 if [[ "$scelta_db" == "1" ]]; then
     echo "  • Imposto .env per l'uso di SQLite..."
     # Rimuoviamo vecchie impostazioni DB per evitare conflitti
     sed -i '/^DB_ENGINE=/d' .env || true
     sed -i '/^DB_NAME=/d' .env || true
-    sed -i '/^OLD_DB_NAME=/d' .env || true
-    # Appendiamo le nuove chiavi per SQLite
+    # Scriviamo le chiavi pulite per SQLite
     echo "DB_ENGINE=sqlite" >> .env
     echo "DB_NAME=db.sqlite3" >> .env
-    echo "OLD_DB_NAME=" >> .env # Svuotato per evitare connessione automatica a MariaDB
 else
     echo "  • Imposto .env per l'uso di MariaDB..."
     sed -i '/^DB_ENGINE=/d' .env || true
