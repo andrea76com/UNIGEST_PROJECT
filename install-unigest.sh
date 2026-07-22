@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# UNIGEST - Script di Installazione Completa (v1.3.8)
+# UNIGEST - Script di Installazione Completa (v1.3.9)
 # Compatibile con Debian/Ubuntu
-# FIX: Autoriparazione .env e Safe-Default SQLite
+# FIX: Aggiornamento attivo .env e prevenzione Access Denied
 
 set -e # Ferma lo script in caso di errore
 
@@ -10,7 +10,7 @@ REPO_URL="https://github.com/andrea76com/UNIGEST_PROJECT"
 PROJECT_DIR="UNIGEST_PROJECT"
 
 echo "===================================================="
-echo "   UNIGEST - Installazione Gestionale v1.3.8"
+echo "   UNIGEST - Installazione Gestionale v1.3.9"
 echo "===================================================="
 
 # Scelta del Database
@@ -85,16 +85,30 @@ pip install --no-cache-dir -r requirements.txt
 
 # 6. Configurazione ambiente (.env)
 echo -e "\n[6/7] Configurazione file .env..."
+# Creiamo il file .env se manca del tutto
 if [ ! -f ".env" ]; then
-    if [[ "$scelta_db" == "1" ]]; then
-        echo "SECRET_KEY=unigest-$(date +%s)" > .env
-        echo "DEBUG=True" >> .env
-        echo "DB_ENGINE=sqlite" >> .env
-        echo "DB_NAME=db.sqlite3" >> .env
-        echo "OLD_DB_NAME=" >> .env # Rilascia vuoto per evitare connessione automatica a MariaDB
+    if [ -f ".env.example" ]; then
+        cp .env.example .env
     else
-        cp .env.example .env || echo "SECRET_KEY=unigest-$(date +%s)" > .env
+        echo "SECRET_KEY=unigest-$(date +%s)" > .env
     fi
+fi
+
+# AGGIORNIAMO ATTIVAMENTE .env in base alla scelta dell'utente per evitare conflitti stale
+if [[ "$scelta_db" == "1" ]]; then
+    echo "  • Imposto .env per l'uso di SQLite..."
+    # Rimuoviamo vecchie impostazioni DB per evitare conflitti
+    sed -i '/^DB_ENGINE=/d' .env || true
+    sed -i '/^DB_NAME=/d' .env || true
+    sed -i '/^OLD_DB_NAME=/d' .env || true
+    # Appendiamo le nuove chiavi per SQLite
+    echo "DB_ENGINE=sqlite" >> .env
+    echo "DB_NAME=db.sqlite3" >> .env
+    echo "OLD_DB_NAME=" >> .env # Svuotato per evitare connessione automatica a MariaDB
+else
+    echo "  • Imposto .env per l'uso di MariaDB..."
+    sed -i '/^DB_ENGINE=/d' .env || true
+    echo "DB_ENGINE=mysql" >> .env
 fi
 
 # 7. Inizializzazione Django
