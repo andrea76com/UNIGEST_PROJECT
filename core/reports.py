@@ -21,24 +21,35 @@ from datetime import date
 
 def crea_header_footer(canvas_obj, doc):
     """
-    Crea header e footer per ogni pagina
+    Crea header e footer per ogni pagina con logo quadrato.png in alto a sinistra
     """
     canvas_obj.saveState()
+    page_width, page_height = canvas_obj._pagesize
 
-    # Header
+    # Logo quadrato.png in alto a sinistra
+    try:
+        import os
+        from django.conf import settings
+        logo_path = os.path.join(settings.BASE_DIR, 'static', 'quadrato.png')
+        if os.path.exists(logo_path):
+            canvas_obj.drawImage(logo_path, 2*cm, page_height - 2.2*cm, width=1.5*cm, height=1.5*cm, mask='auto')
+    except Exception as e:
+        pass
+
+    # Header (spostato a 4*cm per fare spazio al logo quadrato)
     canvas_obj.setFont('Helvetica-Bold', 10)
-    canvas_obj.drawString(2*cm, A4[1] - 1.5*cm, "UNIVERSITÀ DEGLI ADULTI")
+    canvas_obj.drawString(4*cm, page_height - 1.5*cm, "UNIVERSITÀ DEGLI ADULTI")
     canvas_obj.setFont('Helvetica', 8)
     canvas_obj.drawRightString(
-        A4[0] - 2*cm,
-        A4[1] - 1.5*cm,
+        page_width - 2*cm,
+        page_height - 1.5*cm,
         f"Generato il {date.today().strftime('%d/%m/%Y')}"
     )
 
     # Footer
     canvas_obj.setFont('Helvetica', 8)
     canvas_obj.drawCentredString(
-        A4[0] / 2,
+        page_width / 2,
         1*cm,
         f"Pagina {doc.page}"
     )

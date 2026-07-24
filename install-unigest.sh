@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# UNIGEST - Script di Installazione Completa v1.4.0
+# UNIGEST - Script di Installazione Completa v1.4.1
 # Destinazione Predefinita: /opt/UNIGEST_PROJECT
 # Compatibile con Debian/Ubuntu, Python 3.13 e installazioni pulite.
 
@@ -10,7 +10,7 @@ REPO_URL="https://github.com/andrea76com/UNIGEST_PROJECT"
 TARGET_DIR="/opt/UNIGEST_PROJECT"
 
 echo "===================================================="
-echo "   UNIGEST - Installazione Gestionale Completa v1.4.0"
+echo "   UNIGEST - Installazione Gestionale Completa v1.4.1"
 echo "===================================================="
 
 # Richiesta database
@@ -19,6 +19,16 @@ echo "Quale database vuoi utilizzare come principale?"
 echo "1) SQLite (Zero configurazioni, un solo file db.sqlite3 locale, CONSIGLIATO)"
 echo "2) MariaDB/MySQL (Richiede installazione e permessi MySQL)"
 read -p "Scegli (1-2): " scelta_db
+
+# Se sceglie SQLite, chiediamo se vuole preservare/scaricare il DB esistente o crearne uno nuovo vuoto
+scelta_sqlite_tipo="1"
+if [ "$scelta_db" = "1" ]; then
+    echo ""
+    echo "Come vuoi configurare il database SQLite?"
+    echo "1) Usa il database popolato esistente (Preserva db.sqlite3 se presente, o usa quello corrente)"
+    echo "2) Crea un database vuoto da zero (Esegue una migrazione pulita e cancella db.sqlite3 attuale)"
+    read -p "Scegli (1-2): " scelta_sqlite_tipo
+fi
 
 # 1. Installazione dipendenze di sistema
 echo -e "\n[1/7] Installazione dipendenze di sistema..."
@@ -33,6 +43,14 @@ fi
 
 # 2. Creazione della cartella di destinazione /opt con permessi adeguati
 echo -e "\n[2/7] Preparazione cartella di sistema $TARGET_DIR..."
+# Se l'utente vuole preservare il DB SQLite, facciamo un backup temporaneo prima di pulire la cartella
+PRESERVE_DB=false
+if [ "$scelta_db" = "1" ] && [ "$scelta_sqlite_tipo" = "1" ] && [ -f "$TARGET_DIR/db.sqlite3" ]; then
+    echo "  • Trovato database esistente in $TARGET_DIR. Creazione backup temporaneo..."
+    cp "$TARGET_DIR/db.sqlite3" /tmp/db.sqlite3.bak
+    PRESERVE_DB=true
+fi
+
 sudo mkdir -p "$TARGET_DIR"
 sudo chown -R $USER:$USER "$TARGET_DIR"
 
@@ -40,7 +58,6 @@ sudo chown -R $USER:$USER "$TARGET_DIR"
 echo -e "\n[3/7] Sincronizzazione del codice tramite Git..."
 if [ ! -d "$TARGET_DIR/.git" ]; then
     echo "  • Cartella non inizializzata. Clonazione del codice sorgente..."
-    # Se la cartella è esistente ma non è un git, la svuotiamo per evitare errori di clone
     if [ "$(ls -A "$TARGET_DIR")" ]; then
         echo "  • Pulizia file temporanei in $TARGET_DIR..."
         rm -rf "$TARGET_DIR"/*
@@ -49,15 +66,26 @@ if [ ! -d "$TARGET_DIR/.git" ]; then
 else
     echo "  • Cartella già inizializzata. Aggiornamento codice..."
     cd "$TARGET_DIR"
-    # Ricava il branch attuale della cartella di destinazione
-    CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "main")
     git fetch origin
-    # Usa il branch attualmente attivo per evitare errori in caso di futuri merge su main
+    CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "main")
     git reset --hard "origin/$CURRENT_BRANCH"
 fi
 
 # Spostiamoci definitivamente nella cartella di installazione corretta
 cd "$TARGET_DIR"
+
+# Se avevamo fatto il backup del DB, lo ripristiniamo ora nella cartella aggiornata
+if [ "$PRESERVE_DB" = true ]; then
+    echo "  • Ripristino del database SQLite popolato in $TARGET_DIR..."
+    cp /tmp/db.sqlite3.bak "$TARGET_DIR/db.sqlite3"
+    rm /tmp/db.sqlite3.bak
+fi
+
+# Se l'utente ha scelto di resettare/creare un DB vuoto, cancelliamo il vecchio
+if [ "$scelta_db" = "1" ] && [ "$scelta_sqlite_tipo" = "2" ]; then
+    echo "  • Cancellazione del database SQLite precedente come richiesto..."
+    rm -f db.sqlite3
+fi
 
 # AUTORIPARAZIONE requirements.txt
 if [ -f "requirements.txt" ]; then
