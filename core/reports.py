@@ -36,9 +36,7 @@ def crea_header_footer(canvas_obj, doc):
     except Exception as e:
         pass
 
-    # Header (spostato a 4*cm per fare spazio al logo quadrato)
-    canvas_obj.setFont('Helvetica-Bold', 10)
-    canvas_obj.drawString(4*cm, page_height - 1.5*cm, "UNIVERSITÀ DEGLI ADULTI")
+    # Header (rimossa dicitura di testo per via del logo quadrato)
     canvas_obj.setFont('Helvetica', 8)
     canvas_obj.drawRightString(
         page_width - 2*cm,
