@@ -33,13 +33,6 @@ urlpatterns = [
     path('docenti/nuovo/', views.DocenteCreateView.as_view(), name='docente_create'),
     path('docenti/<int:pk>/modifica/', views.DocenteUpdateView.as_view(), name='docente_update'),
     
-    # ========================================================================
-    # ANAGRAFICHE - AUTORITÀ
-    # ========================================================================
-    path('autorita/', views.AutoritaListView.as_view(), name='autorita_list'),
-    path('autorita/<int:pk>/', views.AutoritaDetailView.as_view(), name='autorita_detail'),
-    path('autorita/nuova/', views.AutoritaCreateView.as_view(), name='autorita_create'),
-    path('autorita/<int:pk>/modifica/', views.AutoritaUpdateView.as_view(), name='autorita_update'),
     
     # ========================================================================
     # CORSI

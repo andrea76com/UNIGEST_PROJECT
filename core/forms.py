@@ -7,7 +7,7 @@ Descrizione: Form per l'inserimento e modifica dati
 from django import forms
 from django.core.exceptions import ValidationError
 from .models import (
-    Iscritto, Docente, Autorita, Corso, EdizioneCorso,
+    Iscritto, Docente, Corso, EdizioneCorso,
     IscrizioneAnnoAccademico, IscrizioneCorso, Lezione, PresenzaLezione,
     AnnoAccademico
 )
@@ -111,26 +111,6 @@ class DocenteForm(forms.ModelForm):
         return email
 
 
-class AutoritaForm(forms.ModelForm):
-    """
-    Form per inserimento/modifica autorità
-    """
-    class Meta:
-        model = Autorita
-        fields = [
-            'nome', 'titolo', 'carica', 'indirizzo', 'comune',
-            'email', 'note', 'attivo'
-        ]
-        widgets = {
-            'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nome Cognome'}),
-            'titolo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'On./Dott./Avv.'}),
-            'carica': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Es: Sindaco, Assessore'}),
-            'indirizzo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Via, numero civico'}),
-            'comune': forms.Select(attrs={'class': 'form-control'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'email@esempio.it'}),
-            'note': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
-            'attivo': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-        }
 
 
 # ============================================================================

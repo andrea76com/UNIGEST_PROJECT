@@ -14,11 +14,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import (
-    Iscritto, Docente, Autorita, Corso, EdizioneCorso, AnnoAccademico,
+    Iscritto, Docente, Corso, EdizioneCorso, AnnoAccademico,
     IscrizioneAnnoAccademico, IscrizioneCorso, Lezione, PresenzaLezione
 )
 from .forms import (
-    IscrittoForm, DocenteForm, AutoritaForm, CorsoForm, EdizioneCorsoForm,
+    IscrittoForm, DocenteForm, CorsoForm, EdizioneCorsoForm,
     IscrizioneAnnoForm, IscrizioneCorsoForm, LezioneForm
 )
 
@@ -264,49 +264,6 @@ class DocenteUpdateView(UpdateView):
     
     def form_valid(self, form):
         messages.success(self.request, 'Docente modificato con successo!')
-        return super().form_valid(form)
-
-
-# ============================================================================
-# VIEWS PER AUTORITÀ
-# ============================================================================
-
-class AutoritaListView(ListView):
-    """Lista delle autorità"""
-    model = Autorita
-    template_name = 'anagrafiche/autorita_list.html'
-    context_object_name = 'autorita'
-    paginate_by = 50
-
-
-class AutoritaDetailView(DetailView):
-    """Dettaglio di un'autorità"""
-    model = Autorita
-    template_name = 'anagrafiche/autorita_detail.html'
-    context_object_name = 'autorita'
-
-
-class AutoritaCreateView(CreateView):
-    """Creazione nuova autorità"""
-    model = Autorita
-    form_class = AutoritaForm
-    template_name = 'anagrafiche/autorita_form.html'
-    success_url = reverse_lazy('core:autorita_list')
-    
-    def form_valid(self, form):
-        messages.success(self.request, 'Autorità creata con successo!')
-        return super().form_valid(form)
-
-
-class AutoritaUpdateView(UpdateView):
-    """Modifica autorità esistente"""
-    model = Autorita
-    form_class = AutoritaForm
-    template_name = 'anagrafiche/autorita_form.html'
-    success_url = reverse_lazy('core:autorita_list')
-    
-    def form_valid(self, form):
-        messages.success(self.request, 'Autorità modificata con successo!')
         return super().form_valid(form)
 
 

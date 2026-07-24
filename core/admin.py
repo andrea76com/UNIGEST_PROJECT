@@ -10,7 +10,7 @@ from django.urls import reverse
 from django.db.models import Count
 from .models import (
     Comune, TitoloStudio, ProfessioneAttuale, ProfessionePassata,
-    Iscritto, Docente, Autorita,
+    Iscritto, Docente,
     CategoriaCorso, GruppoCorso, Corso, AnnoAccademico, Quadrimestre,
     EdizioneCorso, IscrizioneAnnoAccademico, IscrizioneCorso,
     Lezione, PresenzaLezione
@@ -138,24 +138,6 @@ class DocenteAdmin(admin.ModelAdmin):
     )
 
 
-@admin.register(Autorita)
-class AutoritaAdmin(admin.ModelAdmin):
-    list_display = ['nome', 'carica', 'email', 'comune', 'attivo']
-    list_filter = ['attivo', 'carica']
-    search_fields = ['nome', 'carica', 'email']
-    
-    fieldsets = (
-        ('Dati Personali', {
-            'fields': ('titolo', 'nome', 'carica', 'attivo')
-        }),
-        ('Contatti', {
-            'fields': ('email', 'indirizzo', 'comune')
-        }),
-        ('Note', {
-            'fields': ('note',),
-            'classes': ('collapse',)
-        }),
-    )
 
 
 # ============================================================================

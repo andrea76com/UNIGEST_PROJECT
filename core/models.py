@@ -209,32 +209,6 @@ class Docente(models.Model):
         return reverse('core:docente_detail', kwargs={'pk': self.pk})
 
 
-class Autorita(models.Model):
-    """
-    Modello per le autorità (cariche istituzionali, ecc.)
-    """
-    nome = models.CharField(max_length=100, verbose_name="Nome e Cognome")
-    titolo = models.CharField(max_length=50, blank=True, verbose_name="Titolo/Prefisso")
-    carica = models.CharField(max_length=100, verbose_name="Carica")
-    
-    # Contatti
-    indirizzo = models.CharField(max_length=255, blank=True, verbose_name="Indirizzo")
-    comune = models.ForeignKey(Comune, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Comune")
-    email = models.EmailField(blank=True, verbose_name="Email")
-    
-    # Info aggiuntive
-    note = models.TextField(blank=True, verbose_name="Note")
-    attivo = models.BooleanField(default=True, verbose_name="Attivo")
-    
-    class Meta:
-        verbose_name = "Autorità"
-        verbose_name_plural = "Autorità"
-        ordering = ['carica', 'nome']
-    
-    def __str__(self):
-        return f"{self.carica} - {self.nome}"
-
-
 # ============================================================================
 # MODELLI CORSI
 # ============================================================================

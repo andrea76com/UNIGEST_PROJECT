@@ -11,7 +11,7 @@ from django.core.management.base import BaseCommand
 from django.db import connections
 from core.models import (
     Comune, TitoloStudio, ProfessioneAttuale, ProfessionePassata,
-    Iscritto, Docente, Autorita,
+    Iscritto, Docente,
     CategoriaCorso, GruppoCorso, Corso, AnnoAccademico, Quadrimestre,
     EdizioneCorso, IscrizioneAnnoAccademico, IscrizioneCorso,
     Lezione
@@ -30,7 +30,7 @@ class Command(BaseCommand):
         super().__init__(*args, **kwargs)
         self.stats = {
             'comuni': 0, 'titoli': 0, 'prof_att': 0, 'prof_pass': 0,
-            'iscritti': 0, 'docenti': 0, 'autorita': 0,
+            'iscritti': 0, 'docenti': 0,
             'categorie': 0, 'gruppi': 0, 'corsi': 0,
             'anni': 0, 'edizioni': 0, 'isc_anno': 0, 'isc_corso': 0,
             'lezioni': 0, 'errori': 0
@@ -130,16 +130,6 @@ class Command(BaseCommand):
                 self.stats['docenti'] += 1
             except: self.stats['errori'] += 1
 
-        cursor.execute("SELECT * FROM `TAutorita`")
-        for row in cursor.fetchall():
-            try:
-                if not self.dry_run:
-                    Autorita.objects.get_or_create(id=row[0], defaults={
-                        'titolo': row[1] or '', 'nome': row[2] or 'Sconosciuto',
-                        'carica': row[3] or '', 'email': row[8] or '', 'attivo': True
-                    })
-                self.stats['autorita'] += 1
-            except: self.stats['errori'] += 1
 
     def import_iscritti(self):
         cursor = connections['old_database'].cursor()
@@ -305,7 +295,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(f"  RIEPILOGO IMPORTAZIONE (v2.6{' - DRY RUN' if self.dry_run else ''})"))
         self.stdout.write('='*70)
         self.stdout.write(f"  • Comuni/Titoli: {self.stats['comuni']} / {self.stats['titoli']}")
-        self.stdout.write(f"  • Staff: {self.stats['docenti']} docenti, {self.stats['autorita']} autorità")
+        self.stdout.write(f"  • Staff: {self.stats['docenti']} docenti")
         self.stdout.write(f"  • Iscritti: {self.stats['iscritti']}")
         self.stdout.write(f"  • Catalogo: {self.stats['categorie']} cat, {self.stats['gruppi']} gruppi, {self.stats['corsi']} corsi")
         self.stdout.write(f"  • Periodi: {self.stats['anni']} anni accademici")

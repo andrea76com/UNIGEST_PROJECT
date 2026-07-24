@@ -49,8 +49,11 @@ if [ ! -d "$TARGET_DIR/.git" ]; then
 else
     echo "  • Cartella già inizializzata. Aggiornamento codice..."
     cd "$TARGET_DIR"
+    # Ricava il branch attuale della cartella di destinazione
+    CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "main")
     git fetch origin
-    git reset --hard origin/jules-1105680828464289992-a66be6d1
+    # Usa il branch attualmente attivo per evitare errori in caso di futuri merge su main
+    git reset --hard "origin/$CURRENT_BRANCH"
 fi
 
 # Spostiamoci definitivamente nella cartella di installazione corretta
